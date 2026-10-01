@@ -133,3 +133,5 @@ Si prefieres vistas del servidor, descomenta el starter de Thymeleaf en `pom.xml
 2. Seguridad: login, roles `SUPER_ADMIN`, `INST_ADMIN`, `TEACHER`, `STUDENT` y carga del `TenantContext` por petición.
 3. Endpoints de sesiones/asistencia, luego CRUD, notificaciones, estadísticas e instituciones.
 4. Sustituir el mock del frontend por `apiFetch()`.
+
+link-demo: https://atrium-sys.netlify.app/
