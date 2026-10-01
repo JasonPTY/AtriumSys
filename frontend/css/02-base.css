@@ -1,0 +1,31 @@
+/* =========================================================
+   02 · BASE
+   Reset, tipografía, body e iconos SVG
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font: 14px/1.5 Inter, Roboto, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--tx);
+}
+
+
+/* =========================================================
+   ICONOS SVG
+   ========================================================= */
+
+svg.i {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex: none;
+}

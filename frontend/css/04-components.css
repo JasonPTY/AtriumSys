@@ -1,0 +1,376 @@
+/* =========================================================
+   04 · COMPONENTES
+   Grid, cards, estadísticas, tablas, estados, botones,
+   calendario, formularios, footer y notificaciones
+   ========================================================= */
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.g2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.card {
+    padding: 18px;
+
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: 12px;
+}
+
+.card h3 {
+    margin: 0 0 12px;
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   ESTADÍSTICAS
+   ========================================================= */
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.stat .ic {
+    width: 44px;
+    height: 44px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 10px;
+
+    color: #fff;
+}
+
+.stat b {
+    display: block;
+
+    font-size: 24px;
+    line-height: 1.1;
+}
+
+.stat span {
+    color: var(--mu);
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   BARRAS DE PROGRESO
+   ========================================================= */
+
+.bar {
+    height: 8px;
+    min-width: 80px;
+
+    overflow: hidden;
+
+    background: var(--bd);
+    border-radius: 4px;
+}
+
+.bar i {
+    display: block;
+    height: 100%;
+}
+
+
+/* =========================================================
+   TABLAS
+   ========================================================= */
+
+.tw {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 480px;
+
+    border-collapse: collapse;
+}
+
+th {
+    padding: 8px 10px;
+
+    text-align: left;
+
+    color: var(--mu);
+    font-size: 12px;
+    font-weight: 500;
+
+    border-bottom: 1px solid var(--bd);
+}
+
+td {
+    padding: 10px;
+
+    border-bottom: 1px solid var(--bd);
+}
+
+tr:hover td {
+    background: var(--hov);
+}
+
+
+/* =========================================================
+   PILLS / ESTADOS
+   ========================================================= */
+
+.pill {
+    padding: 2px 10px;
+
+    border-radius: 99px;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    white-space: nowrap;
+}
+
+.ok {
+    background: var(--okb);
+    color: #047857;
+}
+
+.bad {
+    background: var(--badb);
+    color: #B91C1C;
+}
+
+.wn {
+    background: var(--wb);
+    color: #B45309;
+}
+
+
+/* =========================================================
+   ESTADOS · TEMA OSCURO
+   ========================================================= */
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .ok {
+        color: #6EE7B7;
+    }
+
+    :root:not([data-theme="light"]) .bad {
+        color: #FCA5A5;
+    }
+
+    :root:not([data-theme="light"]) .wn {
+        color: #FCD34D;
+    }
+}
+
+
+/* =========================================================
+   BOTONES
+   ========================================================= */
+
+.btn {
+    all: unset;
+    box-sizing: border-box;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 9px 16px;
+
+    background: var(--pri2);
+    color: #fff;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn:hover {
+    filter: brightness(1.1);
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--ok);
+    outline-offset: 2px;
+}
+
+.btn.g {
+    background: var(--ok);
+}
+
+.btn.o {
+    background: transparent;
+    color: var(--pri);
+    border: 1px solid var(--bd);
+}
+
+
+/* =========================================================
+   ACCIONES
+   ========================================================= */
+
+.acts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   TOGGLE
+   ========================================================= */
+
+.tg {
+    all: unset;
+
+    padding: 4px 12px;
+
+    border-radius: 99px;
+
+    cursor: pointer;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   MENSAJES
+   ========================================================= */
+
+.msg {
+    padding: 12px 0;
+
+    border-bottom: 1px solid var(--bd);
+}
+
+.msg:last-child {
+    border: 0;
+}
+
+.msg small {
+    color: var(--mu);
+}
+
+
+/* =========================================================
+   CALENDARIO
+   ========================================================= */
+
+.cal {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.cal div {
+    min-height: 90px;
+
+    padding: 8px;
+
+    background: var(--bg);
+    border-radius: 8px;
+
+    font-size: 12px;
+}
+
+.cal b {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.cal em {
+    display: block;
+
+    margin-top: 4px;
+    padding: 2px 6px;
+
+    background: var(--pri2);
+    color: #fff;
+
+    border-radius: 4px;
+
+    font-style: normal;
+}
+
+
+/* =========================================================
+   FORMULARIOS
+   ========================================================= */
+
+.form {
+    display: grid;
+    gap: 10px;
+}
+
+.form label {
+    color: var(--mu);
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    padding: 16px 24px;
+
+    background: var(--card);
+    border-top: 1px solid var(--bd);
+
+    color: var(--mu);
+    font-size: 12px;
+}
+
+footer a {
+    color: var(--pri);
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   TOAST / NOTIFICACIÓN
+   ========================================================= */
+
+.toast {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+
+    padding: 10px 16px;
+
+    background: var(--tx);
+    color: var(--bg);
+
+    border-radius: 8px;
+
+    z-index: 50;
+}

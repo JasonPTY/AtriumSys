@@ -1,0 +1,276 @@
+/* =========================================================
+   07 · RESPONSIVE Y NAVEGACIÓN AVANZADA
+   Navegación agrupada, datos clave-valor y media queries
+   ========================================================= */
+
+
+/* =========================================================
+   NAVEGACIÓN AGRUPADA
+   ========================================================= */
+
+#side {
+    background:
+            radial-gradient(
+                    130% 55% at 0 100%,
+                    color-mix(in srgb, var(--ac) 30%, transparent),
+                    transparent 60%
+            ),
+            linear-gradient(
+                    180deg,
+                    color-mix(in srgb, var(--c1) 55%, #000),
+                    var(--c1)
+            );
+}
+
+#nav {
+    flex: 1;
+    overflow-y: auto;
+}
+
+
+/* Elementos principales y grupos */
+
+#nav .ni,
+#nav .gh {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    padding: 6px 8px;
+    margin-bottom: 2px;
+
+    border: 0;
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    background: none;
+    color: #C7D4FF;
+
+    font: inherit;
+}
+
+#nav .ti {
+    width: 32px;
+    height: 32px;
+
+    display: grid;
+    place-items: center;
+
+    flex: none;
+
+    background: rgba(255, 255, 255, .08);
+    border-radius: 10px;
+}
+
+
+/* Hover */
+
+#nav .ni:hover,
+#nav .gh:hover {
+    background: rgba(255, 255, 255, .09);
+    color: #fff;
+}
+
+
+/* Elemento activo */
+
+#nav .ni.on {
+    background: #fff;
+    color: var(--c1);
+    font-weight: 600;
+
+    box-shadow: 0 8px 18px -8px rgba(0, 0, 0, .5);
+}
+
+#nav .ni.on .ti {
+    background: var(--ac);
+    color: #fff;
+}
+
+
+/* Cabecera de grupo */
+
+#nav .gh .lb {
+    flex: 1;
+
+    text-align: left;
+
+    font-size: 12px;
+    opacity: .7;
+}
+
+#nav .gh .cv {
+    width: 16px;
+    height: 16px;
+
+    transition: .2s;
+}
+
+#nav .gh.op .cv {
+    transform: rotate(180deg);
+}
+
+
+/* Hijos del grupo */
+
+#nav .ch {
+    margin: 0 0 8px 24px;
+    padding-left: 10px;
+
+    border-left: 1px solid rgba(255, 255, 255, .18);
+}
+
+#nav .ch .ni {
+    padding: 4px 8px;
+    font-size: 13px;
+}
+
+#nav .ch .ti {
+    width: 26px;
+    height: 26px;
+
+    border-radius: 8px;
+}
+
+#nav .ch .ti svg {
+    width: 15px;
+    height: 15px;
+}
+
+
+/* =========================================================
+   DATOS CLAVE / VALOR
+   ========================================================= */
+
+.kv {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
+}
+
+.f span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--mu);
+    font-size: 12px;
+}
+
+.f b {
+    display: block;
+
+    padding: 9px 0;
+
+    border-bottom: 1px solid var(--bd);
+
+    font-weight: 500;
+
+    word-break: break-word;
+}
+
+.f input {
+    width: 100%;
+}
+
+
+/* =========================================================
+   SWITCH DESACTIVADO
+   ========================================================= */
+
+.sw.off {
+    opacity: .55;
+    cursor: default;
+}
+
+
+/* =========================================================
+   TABLET · 861px — 1100px
+   Sidebar compacta
+   ========================================================= */
+
+@media (min-width: 861px) and (max-width: 1100px) {
+
+    /* Sidebar */
+
+    #side {
+        width: 68px;
+
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .lb,
+    .sub,
+    .me > div:last-child {
+        display: none;
+    }
+
+    .logo {
+        padding: 0;
+        text-align: center;
+        font-size: 11px;
+    }
+
+    #main {
+        margin-left: 68px;
+    }
+
+    .me {
+        justify-content: center;
+    }
+
+
+    /* Navegación */
+
+    #nav .gh {
+        display: none;
+    }
+
+    #nav .ch {
+        display: block !important;
+
+        margin: 0;
+        padding: 0;
+
+        border: 0;
+    }
+
+    #nav .ni {
+        justify-content: center;
+        padding: 5px 0;
+    }
+
+    #nav .ch .ti {
+        width: 32px;
+        height: 32px;
+    }
+
+    #nav .ch .ti svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+
+/* =========================================================
+   MÓVIL · Hasta 520px
+   ========================================================= */
+
+@media (max-width: 520px) {
+
+    .mrow {
+        grid-template-columns: 1fr;
+    }
+
+    .mf .btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .dl {
+        grid-template-columns: 1fr;
+    }
+}

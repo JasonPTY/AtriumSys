@@ -1,0 +1,94 @@
+/* =========================================================
+   01 · TOKENS
+   ========================================================= */
+
+:root {
+    /* Colores principales */
+    --c1: #1E3A8A;
+    --ac: #10B981;
+    --pri: #1E3A8A;
+    --pri2: #3B5BC7;
+
+    /* Superficies y texto */
+    --bg: #F3F4F6;
+    --card: #FFFFFF;
+    --tx: #111827;
+    --mu: #6B7280;
+    --bd: #E5E7EB;
+
+    /* Estados */
+    --ok: #10B981;
+    --bad: #EF4444;
+    --warn: #F59E0B;
+
+    /* Componentes */
+    --side: #1E3A8A;
+    --hov: #F9FAFB;
+
+    /* Fondos de estado */
+    --okb: #D1FAE5;
+    --badb: #FEE2E2;
+    --wb: #FEF3C7;
+
+    /* Modelo de caja */
+    box-sizing: border-box;
+
+    /* Safe area */
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+
+/* =========================================================
+   02 · TEMA OSCURO AUTOMÁTICO
+   ========================================================= */
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #0F172A;
+        --card: #1E293B;
+        --tx: #F1F5F9;
+        --mu: #94A3B8;
+        --bd: #334155;
+
+        --side: #172554;
+        --hov: #243247;
+
+        --okb: #064E3B;
+        --badb: #7F1D1D;
+        --wb: #78350F;
+
+        --pri: #93B4FF;
+    }
+}
+
+
+/* =========================================================
+   03 · TEMA OSCURO MANUAL
+   ========================================================= */
+
+:root[data-theme="dark"] {
+    --bg: #0F172A;
+    --card: #1E293B;
+    --tx: #F1F5F9;
+    --mu: #94A3B8;
+    --bd: #334155;
+
+    --side: #172554;
+    --hov: #243247;
+
+    --okb: #064E3B;
+    --badb: #7F1D1D;
+    --wb: #78350F;
+
+    --pri: #93B4FF;
+}
+
+
+/* =========================================================
+   04 · SAFE AREA / NAVEGACIÓN
+   ========================================================= */
+
+html {
+    scroll-padding-top: env(safe-area-inset-top, 0px);
+}

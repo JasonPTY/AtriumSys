@@ -1,0 +1,262 @@
+/* =========================================================
+   03 · SHELL
+   Sidebar, navegación, usuario, header y estructura principal
+   ========================================================= */
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+#side {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 248px;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px 12px;
+    padding-top: calc(20px + env(safe-area-inset-top, 0px));
+
+    background: var(--side);
+    color: #fff;
+
+    z-index: 20;
+    transition: transform .2s;
+}
+
+
+/* =========================================================
+   MARCA
+   ========================================================= */
+
+.logo {
+    padding: 0 10px 4px;
+
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: .5px;
+}
+
+.logo b {
+    color: var(--ac, #6EE7B7);
+}
+
+.sub {
+    padding: 0 10px 18px;
+
+    font-size: 12px;
+    opacity: .7;
+}
+
+
+/* =========================================================
+   NAVEGACIÓN
+   ========================================================= */
+
+#nav button {
+    all: unset;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 2px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+    color: #DBE4FF;
+}
+
+#nav button:hover {
+    background: rgba(255, 255, 255, .1);
+}
+
+#nav button.on {
+    background: #fff;
+    color: #1E3A8A;
+    font-weight: 600;
+}
+
+#nav button:focus-visible {
+    outline: 2px solid #6EE7B7;
+}
+
+
+/* =========================================================
+   USUARIO
+   ========================================================= */
+
+.me {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-top: auto;
+    padding: 10px;
+
+    border-top: 1px solid rgba(255, 255, 255, .15);
+
+    font-size: 13px;
+}
+
+.av {
+    width: 38px;
+    height: 38px;
+
+    display: grid;
+    place-items: center;
+
+    flex: none;
+
+    border-radius: 50%;
+
+    background: #10B981;
+    color: #fff;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================= */
+
+#main {
+    display: flex;
+    flex-direction: column;
+
+    min-height: 100vh;
+    margin-left: 248px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+
+    padding: 14px 24px;
+
+    background: var(--card);
+    border-bottom: 1px solid var(--bd);
+
+    z-index: 10;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 18px;
+}
+
+header p {
+    margin: 0;
+
+    color: var(--mu);
+    font-size: 12px;
+}
+
+.sp {
+    flex: 1;
+}
+
+
+/* =========================================================
+   CONTROLES DEL HEADER
+   ========================================================= */
+
+#burger {
+    display: none;
+}
+
+.ib {
+    all: unset;
+
+    position: relative;
+
+    padding: 8px;
+    border-radius: 8px;
+
+    cursor: pointer;
+    color: var(--mu);
+}
+
+.ib:hover {
+    background: var(--bg);
+}
+
+.badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+
+    padding: 0 5px;
+
+    background: var(--bad);
+    color: #fff;
+
+    border-radius: 9px;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   CONTROLES DE FORMULARIO
+   ========================================================= */
+
+select,
+input,
+textarea {
+    max-width: 100%;
+
+    padding: 8px 10px;
+
+    font: inherit;
+    color: var(--tx);
+
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: 8px;
+}
+
+
+/* =========================================================
+   RELOJ
+   ========================================================= */
+
+.clock {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.clock b {
+    color: var(--pri);
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   CONTENIDO
+   ========================================================= */
+
+main {
+    flex: 1;
+    padding: 24px;
+}

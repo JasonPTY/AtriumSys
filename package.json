@@ -1,0 +1,13 @@
+{
+  "name": "atrium",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ATRIUM · Plataforma de seguimiento y monitoreo de asistencia (frontend estático modular)",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "node scripts/build-standalone.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

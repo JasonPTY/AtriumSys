@@ -1,0 +1,11 @@
+/* ATRIUM · punto de entrada de estilos.
+   IMPORTANTE: el orden de los @import es el orden de la cascada original.
+   Las capas 05+ sobrescriben reglas de 03/04; no los reordenes. */
+@import url("01-tokens.css");
+@import url("02-base.css");
+@import url("03-shell.css");
+@import url("04-components.css");
+@import url("05-refinements.css");
+@import url("06-screens.css");
+@import url("07-navigation.css");
+@import url("08-institution-responsive.css");

@@ -1,0 +1,2232 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ATRIUM · Gestión académica</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --c1: #1E3A8A;
+        --ac: #10B981;
+        --pri: #1E3A8A;
+        --pri2: #3B5BC7;
+        --bg: #F3F4F6;
+        --card: #fff;
+        --tx: #111827;
+        --mu: #6B7280;
+        --bd: #E5E7EB;
+        --ok: #10B981;
+        --bad: #EF4444;
+        --warn: #F59E0B;
+        --side: #1E3A8A;
+        --okb: #D1FAE5;
+        --badb: #FEE2E2;
+        --wb: #FEF3C7;
+        --hov: #F9FAFB;
+
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Modo oscuro automático (si el usuario no fuerza el claro) */
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+            --bg: #0F172A;
+            --card: #1E293B;
+            --tx: #F1F5F9;
+            --mu: #94A3B8;
+            --bd: #334155;
+            --side: #172554;
+            --okb: #064E3B;
+            --badb: #7F1D1D;
+            --wb: #78350F;
+            --hov: #243247;
+            --pri: #93B4FF;
+        }
+    }
+
+    /* Modo oscuro forzado */
+    :root[data-theme="dark"] {
+        --bg: #0F172A;
+        --card: #1E293B;
+        --tx: #F1F5F9;
+        --mu: #94A3B8;
+        --bd: #334155;
+        --side: #172554;
+        --okb: #064E3B;
+        --badb: #7F1D1D;
+        --wb: #78350F;
+        --hov: #243247;
+        --pri: #93B4FF;
+    }
+
+    html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+    }
+
+
+    /* =========================================================
+       02 · BASE
+       ========================================================= */
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font: 14px/1.5 Inter, Roboto, system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--tx);
+    }
+
+    svg.i {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex: none;
+    }
+
+    select,
+    input,
+    textarea {
+        font: inherit;
+        color: var(--tx);
+        background: var(--card);
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 8px 10px;
+        max-width: 100%;
+    }
+
+    main {
+        padding: 24px;
+        flex: 1;
+    }
+
+    main h2 {
+        font-size: 24px;
+        letter-spacing: -.02em;
+        font-weight: 700;
+    }
+
+
+    /* =========================================================
+       03 · SHELL
+       ========================================================= */
+
+    /* ---- Sidebar ---- */
+    #side {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 248px;
+        display: flex;
+        flex-direction: column;
+        padding: 20px 12px;
+        padding-top: calc(20px + env(safe-area-inset-top, 0px));
+        color: #fff;
+        z-index: 20;
+        transition: transform .2s;
+        background:
+                radial-gradient(130% 55% at 0 100%, color-mix(in srgb, var(--ac) 30%, transparent), transparent 60%),
+                linear-gradient(180deg, color-mix(in srgb, var(--c1) 55%, #000), var(--c1));
+    }
+
+    /* ---- Marca ---- */
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: .5px;
+        padding: 0 10px 4px;
+    }
+
+    .logo b {
+        color: var(--ac, #6EE7B7);
+    }
+
+    .sub {
+        padding: 0 10px 18px;
+        font-size: 12px;
+        opacity: .7;
+    }
+
+    /* ---- Navegación ---- */
+    #nav {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    /* Botones simples (legacy) */
+    #nav button {
+        all: unset;
+        box-sizing: border-box;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        color: #DBE4FF;
+        margin-bottom: 2px;
+    }
+
+    #nav button:hover {
+        background: rgba(255, 255, 255, .1);
+    }
+
+    #nav button.on {
+        background: rgba(255, 255, 255, .14);
+        color: #fff;
+        font-weight: 600;
+        box-shadow: inset 3px 0 0 #10B981;
+    }
+
+    #nav button:focus-visible {
+        outline: 2px solid #6EE7B7;
+    }
+
+    /* Navegación agrupada */
+    #nav .ni,
+    #nav .gh {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 6px 8px;
+        border-radius: 12px;
+        cursor: pointer;
+        color: #C7D4FF;
+        background: none;
+        border: 0;
+        font: inherit;
+        margin-bottom: 2px;
+    }
+
+    #nav .ni:hover,
+    #nav .gh:hover {
+        background: rgba(255, 255, 255, .09);
+        color: #fff;
+    }
+
+    #nav .ni.on {
+        background: #fff;
+        color: var(--c1);
+        font-weight: 600;
+        box-shadow: 0 8px 18px -8px rgba(0, 0, 0, .5);
+    }
+
+    #nav .ti {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, .08);
+        display: grid;
+        place-items: center;
+        flex: none;
+    }
+
+    #nav .ni.on .ti {
+        background: var(--ac);
+        color: #fff;
+    }
+
+    #nav .gh .lb {
+        flex: 1;
+        text-align: left;
+        font-size: 12px;
+        opacity: .7;
+    }
+
+    #nav .gh .cv {
+        width: 16px;
+        height: 16px;
+        transition: .2s;
+    }
+
+    #nav .gh.op .cv {
+        transform: rotate(180deg);
+    }
+
+    #nav .ch {
+        margin: 0 0 8px 24px;
+        padding-left: 10px;
+        border-left: 1px solid rgba(255, 255, 255, .18);
+    }
+
+    #nav .ch .ni {
+        font-size: 13px;
+        padding: 4px 8px;
+    }
+
+    #nav .ch .ti {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+    }
+
+    #nav .ch .ti svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    /* ---- Usuario ---- */
+    .me {
+        margin-top: auto;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        border-top: 1px solid rgba(255, 255, 255, .15);
+        font-size: 13px;
+    }
+
+    .av {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #10B981;
+        color: #fff;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        flex: none;
+    }
+
+    .av.sm {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+
+    .av.xl {
+        width: 84px;
+        height: 84px;
+        font-size: 28px;
+        border: 4px solid var(--card);
+    }
+
+    /* ---- Contenedor principal ---- */
+    #main {
+        margin-left: 248px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    header {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        flex-wrap: wrap;
+        padding: 14px 24px;
+        background: color-mix(in srgb, var(--card) 90%, transparent);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--bd);
+        position: sticky;
+        top: env(safe-area-inset-top, 0px);
+        z-index: 10;
+    }
+
+    header h1 {
+        font-size: 18px;
+        margin: 0;
+    }
+
+    header p {
+        margin: 0;
+        color: var(--mu);
+        font-size: 12px;
+    }
+
+    .sp {
+        flex: 1;
+    }
+
+    #burger {
+        display: none;
+    }
+
+    .ib {
+        all: unset;
+        cursor: pointer;
+        position: relative;
+        padding: 8px;
+        border-radius: 8px;
+        color: var(--mu);
+    }
+
+    .ib:hover {
+        background: var(--bg);
+    }
+
+    .badge {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        background: var(--bad);
+        color: #fff;
+        font-size: 10px;
+        border-radius: 9px;
+        padding: 0 5px;
+    }
+
+    .clock {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .clock b {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--pri);
+    }
+
+    /* ---- Footer ---- */
+    footer {
+        padding: 16px 24px;
+        border-top: 1px solid var(--bd);
+        color: var(--mu);
+        font-size: 12px;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        background: var(--card);
+    }
+
+    footer a {
+        color: var(--pri);
+        text-decoration: none;
+    }
+
+    /* ---- Toast ---- */
+    .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--tx);
+        color: var(--bg);
+        padding: 10px 16px;
+        border-radius: 8px;
+        z-index: 50;
+    }
+
+
+    /* =========================================================
+       04 · COMPONENTES
+       ========================================================= */
+
+    /* ---- Grids ---- */
+    .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        margin-bottom: 20px;
+    }
+
+    .g2 {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    /* ---- Card ---- */
+    .card {
+        background: var(--card);
+        border: 1px solid var(--bd);
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 10px 24px -14px rgba(30, 58, 138, .18);
+    }
+
+    .card h3 {
+        margin: 0 0 12px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ---- Stat ---- */
+    .stat {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+    }
+
+    .stat .ic {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        color: #fff;
+    }
+
+    .stat b {
+        font-size: 24px;
+        display: block;
+        line-height: 1.1;
+    }
+
+    .stat span {
+        color: var(--mu);
+        font-size: 12px;
+    }
+
+    /* ---- KPI ---- */
+    .kpi {
+        padding: 16px 18px;
+    }
+
+    .kpi b {
+        font-size: 30px;
+        letter-spacing: -.03em;
+        display: block;
+        margin: 4px 0 6px;
+        line-height: 1.1;
+    }
+
+    .kh {
+        display: flex;
+        justify-content: space-between;
+        color: var(--mu);
+        font-size: 13px;
+    }
+
+    .kh i {
+        display: grid;
+    }
+
+    .kf {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .kf em {
+        font-style: normal;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .up { color: var(--ok); }
+    .dn { color: var(--bad); }
+
+    /* ---- Hero ---- */
+    .hero {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        padding: 24px;
+        border-radius: 16px;
+        margin-bottom: 16px;
+        color: #fff;
+        background: radial-gradient(circle at 90% 0, var(--pri2), transparent 55%), var(--c1);
+    }
+
+    .hero small {
+        opacity: .8;
+        display: block;
+    }
+
+    .hero b {
+        font-size: 44px;
+        letter-spacing: -.03em;
+        margin-right: 12px;
+    }
+
+    .hero .btn.o {
+        color: #fff;
+        border-color: rgba(255, 255, 255, .4);
+    }
+
+    /* ---- Barras y mapa de calor ---- */
+    .bar {
+        height: 8px;
+        background: var(--bd);
+        border-radius: 4px;
+        overflow: hidden;
+        min-width: 80px;
+    }
+
+    .bar i {
+        display: block;
+        height: 100%;
+    }
+
+    .heat {
+        display: grid;
+        grid-template-rows: repeat(5, 1fr);
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+        gap: 4px;
+    }
+
+    .heat i {
+        min-height: 16px;
+        border-radius: 4px;
+    }
+
+    .hb {
+        display: grid;
+        grid-template-columns: 110px 1fr;
+        gap: 10px;
+        align-items: center;
+        padding: 7px 0;
+    }
+
+    /* ---- Tablas ---- */
+    .tw {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 480px;
+    }
+
+    th {
+        text-align: left;
+        color: var(--mu);
+        font-weight: 600;
+        font-size: 12px;
+        padding: 8px 10px;
+        background: var(--bg);
+        border: 0;
+    }
+
+    th:first-child { border-radius: 8px 0 0 8px; }
+    th:last-child  { border-radius: 0 8px 8px 0; }
+
+    td {
+        padding: 10px;
+        border-bottom: 1px solid var(--bd);
+    }
+
+    tr:hover td {
+        background: var(--hov);
+    }
+
+    /* ---- Pills ---- */
+    .pill {
+        padding: 2px 10px;
+        border-radius: 99px;
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    .ok  { background: var(--okb);  color: #047857; }
+    .bad { background: var(--badb); color: #B91C1C; }
+    .wn  { background: var(--wb);   color: #B45309; }
+
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .ok  { color: #6EE7B7; }
+        :root:not([data-theme="light"]) .bad { color: #FCA5A5; }
+        :root:not([data-theme="light"]) .wn  { color: #FCD34D; }
+    }
+
+    /* ---- Botones ---- */
+    .btn {
+        all: unset;
+        box-sizing: border-box;
+        cursor: pointer;
+        background: var(--pri2);
+        color: #fff;
+        padding: 9px 16px;
+        border-radius: 8px;
+        font-weight: 500;
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .btn:hover {
+        filter: brightness(1.1);
+    }
+
+    .btn:focus-visible {
+        outline: 2px solid var(--ok);
+        outline-offset: 2px;
+    }
+
+    .btn.g { background: var(--ok); }
+
+    .btn.o {
+        background: transparent;
+        color: var(--pri);
+        border: 1px solid var(--bd);
+    }
+
+    .acts {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .tg {
+        all: unset;
+        cursor: pointer;
+        padding: 4px 12px;
+        border-radius: 99px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* ---- Mensajes ---- */
+    .msg {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--bd);
+    }
+
+    .msg:last-child {
+        border: 0;
+    }
+
+    .msg small {
+        color: var(--mu);
+    }
+
+    /* ---- Calendario ---- */
+    .cal {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+    }
+
+    .cal div {
+        background: var(--bg);
+        border-radius: 8px;
+        padding: 8px;
+        min-height: 90px;
+        font-size: 12px;
+    }
+
+    .cal b {
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .cal em {
+        display: block;
+        font-style: normal;
+        background: var(--pri2);
+        color: #fff;
+        border-radius: 4px;
+        padding: 2px 6px;
+        margin-top: 4px;
+    }
+
+    /* ---- Formularios ---- */
+    .form {
+        display: grid;
+        gap: 10px;
+    }
+
+    .form label {
+        font-size: 12px;
+        color: var(--mu);
+    }
+
+    /* ---- Datos clave-valor ---- */
+    .kv {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 18px;
+    }
+
+    .f span {
+        display: block;
+        color: var(--mu);
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .f b {
+        font-weight: 500;
+        display: block;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--bd);
+        word-break: break-word;
+    }
+
+    .f input {
+        width: 100%;
+    }
+
+
+    /* =========================================================
+       05 · PANTALLAS
+       ========================================================= */
+
+    /* ---- Chips ---- */
+    .chips {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .chips span {
+        display: inline-flex;
+        gap: 6px;
+        align-items: center;
+        background: var(--bg);
+        padding: 6px 12px;
+        border-radius: 99px;
+        font-weight: 500;
+    }
+
+    .chips svg {
+        width: 16px;
+        height: 16px;
+        color: var(--pri2);
+    }
+
+    .chs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .tg2 {
+        all: unset;
+        cursor: pointer;
+        padding: 6px 14px;
+        border: 1px solid var(--bd);
+        border-radius: 99px;
+        font-size: 13px;
+    }
+
+    .tg2.on {
+        background: var(--pri2);
+        color: #fff;
+        border-color: var(--pri2);
+    }
+
+    /* ---- Lista de asistencia ---- */
+    .stu {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--bd);
+        flex-wrap: wrap;
+    }
+
+    .stu b {
+        flex: 1;
+        min-width: 120px;
+        font-weight: 500;
+    }
+
+    .seg {
+        display: flex;
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .seg button {
+        all: unset;
+        cursor: pointer;
+        padding: 7px 14px;
+        font-size: 13px;
+        color: var(--mu);
+    }
+
+    .seg .on.ok { background: var(--ok);  color: #fff; }
+    .seg .on.no { background: var(--bad); color: #fff; }
+
+    /* ---- Perfil ---- */
+    .pf {
+        padding: 0;
+        overflow: hidden;
+        margin-bottom: 16px;
+    }
+
+    .cover {
+        height: 96px;
+        background: radial-gradient(circle at 80% 0, var(--pri2), transparent 60%), var(--c1);
+    }
+
+    .pfh {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        padding: 0 20px 20px;
+        margin-top: -36px;
+        flex-wrap: wrap;
+    }
+
+    /* ---- Switches ---- */
+    .sw {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 11px 0;
+        border-bottom: 1px solid var(--bd);
+        cursor: pointer;
+    }
+
+    .sw input {
+        display: none;
+    }
+
+    .sw i {
+        width: 38px;
+        height: 22px;
+        border-radius: 99px;
+        background: var(--bd);
+        position: relative;
+        transition: .2s;
+    }
+
+    .sw i:after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #fff;
+        transition: .2s;
+    }
+
+    .sw input:checked + i {
+        background: var(--ok);
+    }
+
+    .sw input:checked + i:after {
+        left: 19px;
+    }
+
+    .sw.off {
+        opacity: .55;
+        cursor: default;
+    }
+
+    .ra {
+        display: flex;
+        gap: 2px;
+    }
+
+    .ra .ib {
+        padding: 6px;
+    }
+
+    /* ---- Modales ---- */
+    .mo {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, .55);
+        display: grid;
+        place-items: center;
+        padding: 16px;
+        z-index: 60;
+    }
+
+    .md {
+        background: var(--card);
+        border-radius: 14px;
+        width: 100%;
+        max-width: 460px;
+        max-height: 90vh;
+        overflow: auto;
+    }
+
+    .mh {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 18px;
+        border-bottom: 1px solid var(--bd);
+    }
+
+    .mh h3 {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .mb {
+        padding: 18px;
+    }
+
+    .mf {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding: 0 18px 18px;
+        flex-wrap: wrap;
+    }
+
+    .dl {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .dl small {
+        color: var(--mu);
+        display: block;
+    }
+
+    .mrow {
+        display: grid;
+        grid-template-columns: 70px 1fr;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .mrow label {
+        color: var(--mu);
+        font-size: 12px;
+    }
+
+    .mrow input,
+    .mrow select,
+    textarea {
+        width: 100%;
+    }
+
+    /* ---- Correo ---- */
+    .em {
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        padding: 16px;
+        background: var(--bg);
+    }
+
+    .em h4 {
+        margin: 8px 0;
+        font-size: 16px;
+    }
+
+    .em p {
+        white-space: pre-wrap;
+        word-break: break-word;
+        margin: 0 0 12px;
+    }
+
+    .eh {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--pri2);
+        flex: none;
+    }
+
+    .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        cursor: pointer;
+    }
+
+
+    /* =========================================================
+       06 · IDENTIDAD INSTITUCIONAL
+       ========================================================= */
+    .lg {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: var(--ac);
+        color: #fff;
+        display: grid;
+        place-items: center;
+        font-size: 13px;
+        font-weight: 700;
+        overflow: hidden;
+        flex: none;
+    }
+
+    .lg img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #fff;
+    }
+
+    .ins {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+        align-items: start;
+    }
+
+    .pvw {
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--bd);
+    }
+
+    .pvs {
+        padding: 14px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .pvb {
+        padding: 16px;
+        background: var(--bg);
+    }
+
+    .cp {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .cp input[type=color] {
+        width: 44px;
+        height: 38px;
+        padding: 2px;
+        flex: none;
+    }
+
+    .cp input[type=text],
+    .cp input[type=file] {
+        flex: 1;
+        min-width: 0;
+    }
+
+
+    /* =========================================================
+       07 · RESPONSIVE
+       ========================================================= */
+
+    /* ---- Tablet (861px – 1100px): sidebar compacto ---- */
+    @media (min-width: 861px) and (max-width: 1100px) {
+        #side {
+            width: 68px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .lb,
+        .sub,
+        .me > div:last-child {
+            display: none;
+        }
+
+        .logo {
+            font-size: 11px;
+            padding: 0;
+            text-align: center;
+            justify-content: center;
+        }
+
+        #nav button {
+            justify-content: center;
+            padding: 12px 0;
+        }
+
+        #nav .gh {
+            display: none;
+        }
+
+        #nav .ch {
+            display: block !important;
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        #nav .ni {
+            justify-content: center;
+            padding: 5px 0;
+        }
+
+        #nav .ch .ti {
+            width: 32px;
+            height: 32px;
+        }
+
+        #nav .ch .ti svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        #main {
+            margin-left: 68px;
+        }
+
+        .me {
+            justify-content: center;
+        }
+    }
+
+    /* ---- Hasta 900px ---- */
+    @media (max-width: 900px) {
+        .ins {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* ---- Móvil / tablet pequeña (≤ 860px): sidebar off-canvas ---- */
+    @media (max-width: 860px) {
+        #side {
+            transform: translateX(-100%);
+        }
+
+        #side.open {
+            transform: none;
+        }
+
+        #main {
+            margin-left: 0;
+        }
+
+        #burger {
+            display: block;
+        }
+
+        main {
+            padding: 16px;
+        }
+
+        header {
+            padding: 12px 16px;
+        }
+
+        .cal {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* ---- Móvil (≤ 600px): tablas apiladas ---- */
+    @media (max-width: 600px) {
+        table {
+            min-width: 0;
+        }
+
+        tr:first-child {
+            display: none;
+        }
+
+        tr {
+            display: block;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--bd);
+        }
+
+        td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            border: 0;
+            padding: 4px 2px;
+        }
+
+        td:before {
+            content: attr(data-l);
+            color: var(--mu);
+            font-size: 12px;
+        }
+
+        tr:hover td {
+            background: none;
+        }
+    }
+
+    /* ---- Móvil pequeño (≤ 520px) ---- */
+    @media (max-width: 520px) {
+        .mrow {
+            grid-template-columns: 1fr;
+        }
+
+        .mf .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .dl {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+
+<body>
+<aside id="side"><div class="logo">ATRI<b>UM</b></div><div class="sub">Seguimiento de asistencia</div><nav id="nav"></nav>
+<div class="me"><div class="av" id="mav"></div><div><div id="mnm" style="font-weight:600"></div><div id="mrl" style="opacity:.7;font-size:12px"></div></div></div></aside>
+<div id="main"><header>
+<button class="ib" id="burger" aria-label="Menú"></button>
+<div><h1 id="hi"></h1><p id="per">Periodo 2026-II · Semestre en curso</p></div><div class="sp"></div>
+<label style="font-size:12px;color:var(--mu)">Institución <select id="inst"></select></label>
+<label style="font-size:12px;color:var(--mu)">Vista <select id="role"><option value="admin">Administrador general</option><option value="iadm">Admin institucional</option><option value="prof">Profesor</option><option value="est">Estudiante</option></select></label>
+<div class="clock"><b id="ck"></b><p id="dt"></p></div>
+<button class="ib" id="bell" aria-label="Notificaciones"></button></header>
+<main id="view"></main>
+<footer><span>© 2026 ATRIUM</span><span>Versión 1.0.0</span><span class="sp"></span><a href="#">Centro de ayuda</a><a href="#">Soporte</a><a href="#">Privacidad</a></footer></div>
+<script>
+(() => {
+  // js/core/state.js
+  var state = {
+    role: "admin",
+    // admin | iadm | prof | est
+    sec: "inicio",
+    // seccion activa del menu
+    inst: "uni",
+    // clave de la institucion activa (antes CUR)
+    instDraft: null,
+    // borrador del formulario de identidad (antes DR)
+    openGroups: {},
+    // grupos del menu abiertos/cerrados (antes OP)
+    profileEditing: false,
+    // modo edicion del perfil (antes PE)
+    profileData: {},
+    // datos de perfil editados por rol (antes PD)
+    session: null,
+    // sesion de asistencia en curso (antes SES)
+    channels: { c: 1, p: 1 },
+    // canales del aviso: correo / notificacion (antes CH)
+    newLogo: ""
+    // logo cargado en el modal "Nueva institucion" (antes NL)
+  };
+
+  // js/core/dom.js
+  var $ = (id) => document.getElementById(id);
+
+  // js/core/config.js
+  var MENU = {
+    admin: [
+      ["inicio", "Inicio", "home"],
+      ["insts", "Instituciones", "id"],
+      ["admins", "Administradores", "users"],
+      ["stats", "Estadísticas globales", "chart"],
+      ["conf", "Configuración", "menu"],
+      ["perfil", "Mi perfil", "user"]
+    ],
+    iadm: [
+      ["inicio", "Inicio", "home"],
+      ["usuarios", "Usuarios", "users"],
+      ["profesores", "Profesores", "id"],
+      ["estudiantes", "Estudiantes", "users"],
+      ["cursos", "Cursos", "book"],
+      ["grupos", "Grupos", "users"],
+      ["hist", "Asistencias", "check"],
+      ["monit", "Monitoreo", "chart"],
+      ["reporte", "Reportes", "chart"],
+      ["notif", "Notificaciones", "bell"],
+      ["inst", "Mi institución", "id"],
+      ["perfil", "Mi perfil", "user"]
+    ],
+    prof: [
+      ["inicio", "Inicio", "home"],
+      ["estudiantes", "Estudiantes", "users"],
+      ["asist", "Asistencias", "check"],
+      ["hist", "Historial", "clock"],
+      ["notif", "Notificaciones", "bell"],
+      ["reportes", "Reportes", "chart"],
+      ["perfil", "Mi perfil", "user"]
+    ],
+    est: [
+      ["inicio", "Inicio", "home"],
+      ["clases", "Mis clases", "cal"],
+      ["notif", "Mis notificaciones", "bell"],
+      ["perfil", "Mi perfil", "user"]
+    ]
+  };
+  var GROUPS = {
+    admin: ["inicio", ["Instituciones", "id", ["insts", "admins"]], ["Plataforma", "chart", ["stats", "conf"]], "perfil"],
+    iadm: [
+      "inicio",
+      ["Gestión", "users", ["usuarios", "profesores", "estudiantes"]],
+      ["Académico", "book", ["cursos", "grupos"]],
+      ["Asistencia", "check", ["hist", "monit"]],
+      ["Análisis", "chart", ["reporte", "notif"]],
+      "inst",
+      "perfil"
+    ],
+    prof: ["inicio", ["Clases", "check", ["asist", "hist", "estudiantes"]], ["Seguimiento", "chart", ["reportes", "notif"]], "perfil"]
+  };
+
+  // js/core/registry.js
+  var views = { admin: {}, iadm: {}, prof: {}, est: {} };
+  function registerViews(role, map) {
+    Object.assign(views[role], map);
+  }
+
+  // js/data/users.js
+  var USER = {
+    admin: { name: "Laura Méndez", label: "Administrador general", initials: "LM", email: "laura.mendez@atrium.edu" },
+    iadm: { name: "Marta Solís", label: "Admin institucional", initials: "MS", email: "m.solis@atrium.edu" },
+    prof: { name: "Dr. Carlos Rivas", label: "Profesor", initials: "CR", email: "c.rivas@atrium.edu" },
+    est: { name: "Ana Torres", label: "Estudiante", initials: "AT", email: "ana.torres@atrium.edu" }
+  };
+  var NOTIFICATIONS = {
+    est: [
+      { title: "Nuevo horario de tutoría", from: "Dr. Rivas", when: "Hoy 09:10" },
+      { title: "Tienes 2 inasistencias en Química", from: "Sistema", when: "Ayer" },
+      { title: "Entrega del laboratorio 3", from: "Dra. Salas", when: "Lun" }
+    ],
+    prof: [
+      { title: "3 estudiantes bajo 75% de asistencia", from: "Sistema", when: "Hoy" },
+      { title: "Aula cambiada: PRG-110 en B-204", from: "Administración", when: "Ayer" }
+    ],
+    admin: [
+      { title: "Cierre de inscripciones en 3 días", from: "Sistema", when: "Hoy" },
+      { title: "2 solicitudes de cuenta pendientes", from: "Sistema", when: "Ayer" }
+    ],
+    iadm: [{ title: "Periodo 2026-II habilitado", from: "Sistema", when: "Hoy" }]
+  };
+  var sentMessages = [
+    {
+      s: "Recordatorio: examen parcial el viernes",
+      c: "Cálculo I",
+      t: "Hace 2 h",
+      m: "Hola a todos, recuerden que el examen parcial es el viernes a las 8:00 en el aula A-101."
+    }
+  ];
+
+  // js/ui/icons.js
+  var PATHS = {
+    home: "M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z",
+    users: "M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M10 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8M21 20v-2a4 4 0 0 0-3-3.9M16 2.1a4 4 0 0 1 0 7.8",
+    book: "M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5zM4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5",
+    check: "M9 12l2 2 4-4M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0",
+    chart: "M4 20V10M10 20V4M16 20v-8M22 20H2",
+    bell: "M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0",
+    user: "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8",
+    cal: "M3 6h18v15H3zM3 10h18M8 2v4M16 2v4",
+    clock: "M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0",
+    menu: "M3 6h18M3 12h18M3 18h18",
+    send: "M22 2L11 13M22 2l-7 20-4-9-9-4z",
+    plus: "M12 5v14M5 12h14",
+    id: "M3 5h18v14H3zM7 10h4M7 14h6",
+    eye: "M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6",
+    edit: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z",
+    trash: "M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6",
+    down: "M12 3v12M7 10l5 5 5-5M4 21h16",
+    chev: "M6 9l6 6 6-6"
+  };
+  var ic = (name, extra = "") => `<svg class="i${extra ? " " + extra : ""}" viewBox="0 0 24 24"><path d="${PATHS[name]}"/></svg>`;
+
+  // js/ui/components.js
+  var barColor = (p) => p >= 90 ? "var(--ok)" : p >= 80 ? "var(--warn)" : "var(--bad)";
+  var pill = (p) => `<span class="pill ${p >= 90 ? "ok" : p >= 80 ? "wn" : "bad"}">${p}%</span>`;
+  var progress = (p) => `<div style="display:flex;gap:8px;align-items:center"><div class="bar"><i style="width:${p}%;background:${barColor(p)}"></i></div>${pill(p)}</div>`;
+  var statusPill = (s) => `<span class="pill ${s == "Activo" || s == "Regular" ? "ok" : s == "Pendiente" || s == "En riesgo" ? "wn" : "bad"}">${s}</span>`;
+  var kpi = (label, value, color, icon) => {
+    const seed = [...label].reduce((a, ch) => a + ch.charCodeAt(0), 0);
+    const points = Array.from({ length: 8 }, (_, k) => `${k * 12},${28 - (10 + seed * (k + 3) % 17)}`).join(" ");
+    const up = seed % 3;
+    return `<div class="card kpi"><div class="kh"><span>${label}</span><i style="color:${color}">${ic(icon)}</i></div><b>${value}</b><div class="kf"><em class="${up ? "up" : "dn"}">${up ? "▲ +" + (seed % 5 + 1) + "%" : "▼ −" + (seed % 4 + 1) + "%"}</em><svg viewBox="0 0 84 30" width="84" height="30"><polyline points="${points}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round"/></svg></div></div>`;
+  };
+  var table = (headers, rows) => `<div class="tw"><table><tr>${headers.map((h) => `<th>${h}</th>`).join("")}</tr>${rows.map((r) => `<tr>${r.map((cell, j) => `<td data-l="${headers[j]}">${cell}</td>`).join("")}</tr>`).join("")}</table></div>`;
+  var card = (title, body, attrs = "") => `<div class="card" ${attrs}><h3>${title}</h3>${body}</div>`;
+  var btn = (label, cls, onclick) => `<button class="btn ${cls}" onclick="${onclick}">${label}</button>`;
+  var iconBtn = (icon, label, onclick, extra = "") => `<button class="ib" ${extra} title="${label}" aria-label="${label}" onclick="${onclick}">${ic(icon)}</button>`;
+  var toastBtn = (label) => `<button class="btn o" onclick="toast('${label}')">${label}</button>`;
+
+  // js/core/render.js
+  function navHtml(menu) {
+    const item = (k) => {
+      const m = menu.find((x) => x[0] == k);
+      return `<button class="ni ${k == state.sec ? "on" : ""}" onclick="go('${k}')"><span class="ti">${ic(m[2])}</span><span class="lb">${m[1]}</span></button>`;
+    };
+    return (GROUPS[state.role] || menu.map((m) => m[0])).map((e) => {
+      if (typeof e == "string") return item(e);
+      const open = state.openGroups[e[0]] !== false;
+      return `<button class="gh ${open ? "op" : ""}" onclick="toggleGroup('${e[0]}')"><span class="ti">${ic(e[1])}</span><span class="lb">${e[0]}</span>${ic("chev", "cv")}</button><div class="ch" style="display:${open ? "block" : "none"}">${e[2].map(item).join("")}</div>`;
+    }).join("");
+  }
+  function go(sec) {
+    state.sec = sec;
+    render();
+    $("side").classList.remove("open");
+  }
+  function toggleGroup(title) {
+    state.openGroups[title] = state.openGroups[title] === false;
+    render();
+  }
+  var fallbackView = () => card("Notificaciones", NOTIFICATIONS[state.role].map((s) => `<div class="msg"><b>${s.title}</b><br><small>${s.from} · ${s.when}</small></div>`).join(""));
+  function render() {
+    const menu = MENU[state.role];
+    const current = menu.find((m) => m[0] == state.sec) || menu[0];
+    state.sec = current[0];
+    $("nav").innerHTML = navHtml(menu);
+    const u = USER[state.role];
+    $("mav").textContent = u.initials;
+    $("mnm").textContent = u.name;
+    $("mrl").textContent = u.label;
+    $("hi").textContent = "Hola, " + u.name.split(" ").slice(0, state.role == "prof" ? 2 : 1).join(" ") + " 👋";
+    $("bc").textContent = NOTIFICATIONS[state.role].length;
+    const view = views[state.role][state.sec] || fallbackView;
+    $("view").innerHTML = `<h2 style="margin:0 0 16px;font-size:20px">${current[1]}</h2>` + view();
+  }
+
+  // js/data/institutions.js
+  var STORAGE_KEY = "atrium_inst";
+  var INST = {
+    uni: { n: "Universidad Nacional del Istmo", s: "UNI", lema: "Excelencia académica", web: "www.uni.edu", mail: "contacto@uni.edu", c1: "#1E3A8A", c2: "#10B981", logo: "" },
+    col: { n: "Colegio Santa Lucía", s: "CSL", lema: "Formando con valores", web: "www.santalucia.edu", mail: "info@santalucia.edu", c1: "#7C2D12", c2: "#F59E0B", logo: "" }
+  };
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    if (saved) for (const k in saved) INST[k] = Object.assign(INST[k] || {}, saved[k]);
+  } catch (e) {
+  }
+  INST.uni.adm = INST.uni.adm || "Marta Solís";
+  INST.uni.amail = INST.uni.amail || "m.solis@uni.edu";
+  INST.col.adm = INST.col.adm || "Pedro Lara";
+  INST.col.amail = INST.col.amail || "p.lara@santalucia.edu";
+  function persistInstitutions() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(INST));
+    } catch (e) {
+    }
+  }
+  var instKeys = () => Object.keys(INST);
+  var instList = () => Object.values(INST);
+  var isActive = (t) => t.act !== false;
+  var demoStats = (t) => {
+    const h = [...t.n].reduce((a, c) => a + c.charCodeAt(0), 0);
+    return { e: 300 + h % 900, p: 20 + h % 50, c: 10 + h % 40, a: 80 + h % 17 };
+  };
+  var sumStat = (k) => instList().filter(isActive).reduce((a, t) => a + demoStats(t)[k], 0);
+  var avgAttendance = () => Math.round(sumStat("a") / Math.max(1, instList().filter(isActive).length));
+
+  // js/core/theme.js
+  function applyTheme() {
+    const t = state.role == "admin" ? { n: "Plataforma global", s: "AT", logo: "" } : INST[state.inst];
+    document.title = "ATRIUM · " + t.s;
+    document.querySelector(".logo").innerHTML = `<span class="lg">${t.logo ? `<img src="${t.logo}" alt="">` : t.s.slice(0, 2)}</span><span class="lb">ATRI<b>UM</b></span>`;
+    document.querySelector(".sub").textContent = t.n;
+    $("per").textContent = t.s + " · Periodo 2026-II · Semestre en curso";
+    document.querySelector("footer span").textContent = "© 2026 " + t.n;
+    $("inst").parentElement.style.display = state.role == "admin" ? "none" : "";
+    $("inst").innerHTML = Object.keys(INST).map((k) => `<option value="${k}" ${k == state.inst ? "selected" : ""}>${INST[k].s}${INST[k].act === false ? " (inactiva)" : ""}</option>`).join("");
+  }
+
+  // js/core/clock.js
+  function tick() {
+    const d = /* @__PURE__ */ new Date();
+    $("ck").textContent = d.toLocaleTimeString("es", { hour12: false });
+    $("dt").textContent = d.toLocaleDateString("es", { weekday: "long", day: "numeric", month: "long" });
+  }
+  function startClock() {
+    tick();
+    setInterval(tick, 1e3);
+  }
+
+  // js/data/courses.js
+  var COURSES = [
+    { code: "MAT-101", name: "Cálculo I", prof: "Dr. Rivas", enrolled: 42, attendance: 94 },
+    { code: "FIS-201", name: "Física II", prof: "Dra. Salas", enrolled: 38, attendance: 88 },
+    { code: "PRG-110", name: "Programación", prof: "Dr. Rivas", enrolled: 45, attendance: 96 },
+    { code: "QUI-105", name: "Química General", prof: "Dr. Peña", enrolled: 36, attendance: 79 },
+    { code: "HIS-120", name: "Historia Moderna", prof: "Dra. Vega", enrolled: 30, attendance: 91 }
+  ];
+
+  // js/data/school.js
+  var db = {
+    prof: [
+      { n: "Dr. Rivas", c: "Cálculo I, Programación", h: 18 },
+      { n: "Dra. Salas", c: "Física II", h: 9 },
+      { n: "Dr. Peña", c: "Química General", h: 9 },
+      { n: "Dra. Vega", c: "Historia Moderna", h: 6 }
+    ],
+    est: [
+      { n: "Ana Torres", p: "Ingeniería", c: 5, s: "Regular" },
+      { n: "Bruno Díaz", p: "Ingeniería", c: 4, s: "Regular" },
+      { n: "Camila Ríos", p: "Ciencias", c: 5, s: "En riesgo" },
+      { n: "Diego Soto", p: "Humanidades", c: 3, s: "Inactivo" }
+    ],
+    cur: COURSES.map((c) => ({ k: c.code, n: c.name, pr: c.prof, i: c.enrolled })),
+    grp: [
+      { n: "Cálculo I · A", c: "Cálculo I", pr: "Dr. Rivas", i: 22, h: "Lun y Mié 08:00" },
+      { n: "Cálculo I · B", c: "Cálculo I", pr: "Dr. Rivas", i: 20, h: "Mar y Jue 10:00" },
+      { n: "Física II · A", c: "Física II", pr: "Dra. Salas", i: 38, h: "Mar 14:00" },
+      { n: "Programación · A", c: "Programación", pr: "Dr. Rivas", i: 45, h: "Mar y Jue 10:00" }
+    ],
+    hist: [
+      { id: 1, f: "28 sep 2026", c: "Cálculo I", pr: "Dr. Rivas", p: 40, a: 2 },
+      { id: 2, f: "27 sep 2026", c: "Programación", pr: "Dr. Rivas", p: 43, a: 2 },
+      { id: 3, f: "26 sep 2026", c: "Física II", pr: "Dra. Salas", p: 34, a: 4 },
+      { id: 4, f: "25 sep 2026", c: "Cálculo I", pr: "Dr. Rivas", p: 38, a: 4 },
+      { id: 5, f: "25 sep 2026", c: "Química General", pr: "Dr. Peña", p: 30, a: 6 },
+      { id: 6, f: "24 sep 2026", c: "Historia Moderna", pr: "Dra. Vega", p: 28, a: 2 }
+    ]
+  };
+  var STORE = {
+    col: {
+      prof: [{ n: "Prof. Ruiz", c: "Matemática 9°", h: 12 }],
+      est: [
+        { n: "Luis Mora", p: "9° grado", c: 6, s: "Regular" },
+        { n: "Sofía Pardo", p: "9° grado", c: 6, s: "Regular" }
+      ],
+      cur: [{ k: "MAT-9", n: "Matemática 9°", pr: "Prof. Ruiz", i: 28 }],
+      grp: [{ n: "Matemática 9° · A", c: "Matemática 9°", pr: "Prof. Ruiz", i: 28, h: "Lun y Mié 07:30" }],
+      hist: [{ id: 101, f: "28 sep 2026", c: "Matemática 9°", pr: "Prof. Ruiz", p: 26, a: 2 }]
+    }
+  };
+  function switchInstitution(next) {
+    STORE[state.inst] = { prof: db.prof, est: db.est, cur: db.cur, grp: db.grp, hist: db.hist };
+    const t = STORE[next] || { prof: [], est: [], cur: [], grp: [], hist: [] };
+    db.prof = t.prof;
+    db.est = t.est;
+    db.cur = t.cur;
+    db.grp = t.grp;
+    db.hist = t.hist;
+    state.inst = next;
+  }
+  var attendancePct = (h) => Math.round(h.p / (h.p + h.a) * 100);
+  var ENTITY_NAMES = { prof: "profesor", est: "estudiante", cur: "curso", grp: "grupo" };
+  var profNames = () => db.prof.map((p) => p.n);
+  var courseNames = () => db.cur.map((c) => c.n);
+  var ENTITY_FIELDS = {
+    prof: [["n", "Nombre"], ["c", "Cursos asignados"], ["h", "Horas por semana", "number"]],
+    est: [["n", "Nombre"], ["p", "Programa"], ["c", "Cursos inscritos", "number"], ["s", "Estado", ["Regular", "En riesgo", "Inactivo"]]],
+    cur: [["k", "Código"], ["n", "Nombre del curso"], ["pr", "Profesor", profNames], ["i", "Inscritos", "number"]],
+    grp: [["n", "Grupo"], ["c", "Curso", courseNames], ["pr", "Profesor", profNames], ["i", "Estudiantes", "number"], ["h", "Horario"]]
+  };
+
+  // js/ui/toast.js
+  function toast(msg) {
+    const t = document.createElement("div");
+    t.className = "toast";
+    t.textContent = msg;
+    document.body.append(t);
+    setTimeout(() => t.remove(), 1800);
+  }
+
+  // js/ui/modal.js
+  function modal(title, body, footer = "") {
+    closeModal();
+    const m = document.createElement("div");
+    m.className = "mo";
+    m.id = "mo";
+    m.innerHTML = `<div class="md" role="dialog" aria-label="${title}"><div class="mh"><h3>${title}</h3><button class="ib" onclick="closeModal()" aria-label="Cerrar">✕</button></div><div class="mb">${body}</div><div class="mf">${footer}</div></div>`;
+    m.onclick = (e) => {
+      if (e.target === m) closeModal();
+    };
+    document.body.append(m);
+  }
+  function closeModal() {
+    const m = document.getElementById("mo");
+    if (m) m.remove();
+  }
+
+  // js/ui/charts.js
+  var bars = (data) => {
+    const w = 300, h = 170;
+    return `<svg viewBox="0 0 ${w} ${h}" style="width:100%"><g>${data.map((x, i) => {
+      const bh = x[1] * 1.3, bx = 12 + i * (w - 24) / data.length, bw = (w - 24) / data.length - 10;
+      return `<rect x="${bx}" y="${h - 22 - bh}" width="${bw}" height="${bh}" rx="4" fill="${x[1] >= 90 ? "#10B981" : x[1] >= 80 ? "#3B5BC7" : "#EF4444"}"/><text x="${bx + bw / 2}" y="${h - 6}" text-anchor="middle" font-size="10" fill="var(--mu)">${x[0]}</text><text x="${bx + bw / 2}" y="${h - 26 - bh}" text-anchor="middle" font-size="10" fill="var(--tx)">${x[1]}</text>`;
+    }).join("")}</g></svg>`;
+  };
+  var donut = (a, b, c) => {
+    const t = a + b + c, r = 54, L = 2 * Math.PI * r;
+    let o = 0;
+    const seg = (v, color) => {
+      const d = v / t * L;
+      const e = `<circle r="${r}" cx="70" cy="70" fill="none" stroke="${color}" stroke-width="18" stroke-dasharray="${d} ${L - d}" stroke-dashoffset="${-o}" transform="rotate(-90 70 70)"/>`;
+      o += d;
+      return e;
+    };
+    return `<div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap"><svg viewBox="0 0 140 140" width="140">${seg(a, "#10B981") + seg(b, "#F59E0B") + seg(c, "#EF4444")}<text x="70" y="76" text-anchor="middle" font-size="20" font-weight="700" fill="var(--tx)">${Math.round(a / t * 100)}%</text></svg><div><div><span class="pill ok">Presente ${a}%</span></div><br><div><span class="pill wn">Tardanza ${b}%</span></div><br><div><span class="pill bad">Ausente ${c}%</span></div></div></div>`;
+  };
+  var heat = () => {
+    let h = '<div class="heat">';
+    for (let d = 0; d < 5; d++)
+      for (let w = 0; w < 14; w++) {
+        const v = (w * 7 + d * 13 + w * d) % 10;
+        h += `<i title="${60 + v * 4}%" style="background:${v < 2 ? "var(--bad)" : `color-mix(in srgb,var(--ok) ${25 + v * 8}%,var(--bg))`}"></i>`;
+      }
+    return h + "</div>";
+  };
+  var ring = (p) => `<svg viewBox="0 0 100 100" width="120"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--bd)" stroke-width="10"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--ok)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${p * 2.64} 264" transform="rotate(-90 50 50)"/><text x="50" y="56" text-anchor="middle" font-weight="700" font-size="20" fill="var(--tx)">${p}%</text></svg>`;
+
+  // js/views/admin/institutions.js
+  var institutionStatus = (t) => statusPill(isActive(t) ? "Activo" : "Inactivo");
+  var institutionsView = () => `<div class="acts"><button class="btn" onclick="instNew()">${ic("plus")}Nueva institución</button></div>` + card(
+    "Instituciones",
+    table(
+      ["Institución", "Nombre corto", "Estudiantes", "Admin institucional", "Estado", "Acciones"],
+      instKeys().map((k) => {
+        const t = INST[k];
+        return [
+          t.n,
+          t.s,
+          demoStats(t).e,
+          t.adm || "Sin asignar",
+          institutionStatus(t),
+          `<div class="ra">${iconBtn("eye", "Ver detalles", `instView('${k}')`)}${iconBtn("edit", "Editar", `instEdit('${k}')`)}<button class="btn o" onclick="instToggle('${k}')">${isActive(t) ? "Desactivar" : "Activar"}</button></div>`
+        ];
+      })
+    )
+  );
+  function instNew() {
+    state.newLogo = "";
+    const row = (label, id, extra = "") => `<div class="mrow"><label>${label}</label><input id="${id}" ${extra}></div>`;
+    modal(
+      "Nueva institución",
+      row("Nombre", "ni_n") + row("Nombre corto", "ni_s") + row("Lema", "ni_l") + row("Sitio web", "ni_w") + row("Correo de contacto", "ni_c", 'type="email"') + `<div class="mrow"><label>Logo</label><input type="file" accept="image/*" onchange="instLogo(this)"></div>` + row("Admin institucional", "ni_a", 'placeholder="Nombre completo"') + row("Correo del admin", "ni_m", 'type="email"'),
+      btn("Cancelar", "o", "closeModal()") + btn("Crear institución", "g", "instCreate()")
+    );
+  }
+  function instLogo(input) {
+    const f = input.files[0];
+    if (!f) return;
+    if (f.size > 3e5) {
+      input.value = "";
+      return toast("El logo debe pesar menos de 300 KB");
+    }
+    const r = new FileReader();
+    r.onload = () => state.newLogo = r.result;
+    r.readAsDataURL(f);
+  }
+  function instCreate() {
+    const g = (k) => $("ni_" + k).value.trim();
+    if (!g("n") || !g("s") || !g("a") || !g("m")) return toast("Completa nombre, nombre corto y admin institucional");
+    INST["i" + Date.now()] = { n: g("n"), s: g("s"), lema: g("l"), web: g("w"), mail: g("c"), logo: state.newLogo, c1: "#1E3A8A", c2: "#10B981", adm: g("a"), amail: g("m") };
+    persistInstitutions();
+    closeModal();
+    applyTheme();
+    render();
+    toast("Institución creada");
+  }
+  function instView(k) {
+    const t = INST[k], x = demoStats(t);
+    modal(
+      "Detalle de la institución",
+      `<div class="dl"><div><small>Nombre</small><b>${t.n}</b></div><div><small>Nombre corto</small><b>${t.s}</b></div><div><small>Estado</small>${institutionStatus(t)}</div><div><small>Admin institucional</small><b>${t.adm || "Sin asignar"}</b></div><div><small>Estudiantes</small><b>${x.e}</b></div><div><small>Profesores</small><b>${x.p}</b></div><div><small>Cursos</small><b>${x.c}</b></div><div><small>Asistencia</small>${pill(x.a)}</div><div><small>Sitio web</small><b>${t.web || "—"}</b></div><div><small>Contacto</small><b>${t.mail || "—"}</b></div></div>`,
+      btn("Cerrar", "o", "closeModal()") + btn("Editar", "", `instEdit('${k}')`)
+    );
+  }
+  function instEdit(k) {
+    const t = INST[k];
+    const f = (label, id, v) => `<div class="mrow"><label>${label}</label><input id="ie_${id}" value="${v || ""}"></div>`;
+    modal(
+      "Editar institución",
+      f("Nombre", "n", t.n) + f("Nombre corto", "s", t.s) + f("Lema", "l", t.lema) + f("Sitio web", "w", t.web) + f("Contacto", "c", t.mail),
+      btn("Cancelar", "o", "closeModal()") + btn("Guardar cambios", "g", `instSave('${k}')`)
+    );
+  }
+  function instSave(k) {
+    const g = (i) => $("ie_" + i).value.trim(), t = INST[k];
+    if (!g("n") || !g("s")) return toast("Completa nombre y nombre corto");
+    Object.assign(t, { n: g("n"), s: g("s"), lema: g("l"), web: g("w"), mail: g("c") });
+    persistInstitutions();
+    closeModal();
+    applyTheme();
+    render();
+    toast("Institución actualizada");
+  }
+  function instToggle(k) {
+    INST[k].act = !isActive(INST[k]);
+    persistInstitutions();
+    applyTheme();
+    render();
+    toast(isActive(INST[k]) ? "Institución activada" : "Institución desactivada");
+  }
+  var institutionHandlers = { instNew, instLogo, instCreate, instView, instEdit, instSave, instToggle };
+
+  // js/views/admin/home.js
+  var adminHome = () => `<div class="grid">${kpi("Instituciones activas", instList().filter(isActive).length, "#1E3A8A", "id") + kpi("Estudiantes totales", sumStat("e").toLocaleString("es"), "#3B5BC7", "users") + kpi("Profesores", sumStat("p"), "#6366F1", "users") + kpi("Asistencia global", avgAttendance() + "%", "#10B981", "check")}</div><div class="grid g2">${card("Asistencia por institución (%)", bars(instList().map((t) => [t.s, demoStats(t).a])))}${card(
+    "Estado de instituciones",
+    table(["Institución", "Asistencia", "Estado"], instList().map((t) => [t.n, pill(demoStats(t).a), institutionStatus(t)]))
+  )}</div>`;
+
+  // js/views/admin/admins.js
+  var adminsView = () => `<div class="acts"><button class="btn" onclick="adminEdit('')">${ic("plus")}Asignar administrador</button></div>` + card(
+    "Administradores institucionales",
+    table(
+      ["Administrador", "Correo", "Institución", "Acciones"],
+      instKeys().map((k) => {
+        const t = INST[k];
+        return [t.adm || "Sin asignar", t.amail || "—", t.n, `<div class="ra">${iconBtn("edit", "Editar", `adminEdit('${k}')`)}${iconBtn("trash", "Quitar", `adminRemove('${k}')`, 'style="color:var(--bad)"')}</div>`];
+      })
+    )
+  );
+  function adminEdit(k) {
+    modal(
+      k ? "Editar administrador" : "Asignar administrador",
+      `<div class="mrow"><label>Institución</label><select id="ai_k" ${k ? "disabled" : ""}>${instKeys().map((x) => `<option value="${x}" ${x == k ? "selected" : ""}>${INST[x].n}</option>`).join("")}</select></div><div class="mrow"><label>Nombre</label><input id="ai_n" value="${k ? INST[k].adm || "" : ""}"></div><div class="mrow"><label>Correo</label><input id="ai_m" type="email" value="${k ? INST[k].amail || "" : ""}"></div>`,
+      btn("Cancelar", "o", "closeModal()") + btn("Guardar", "g", "adminSave()")
+    );
+  }
+  function adminSave() {
+    const t = INST[$("ai_k").value];
+    if (!$("ai_n").value.trim() || !$("ai_m").value.trim()) return toast("Completa nombre y correo");
+    t.adm = $("ai_n").value.trim();
+    t.amail = $("ai_m").value.trim();
+    persistInstitutions();
+    closeModal();
+    render();
+    toast("Administrador asignado");
+  }
+  function adminRemove(k) {
+    INST[k].adm = "";
+    INST[k].amail = "";
+    persistInstitutions();
+    render();
+    toast("Administrador quitado");
+  }
+  var adminsHandlers = { adminEdit, adminSave, adminRemove };
+
+  // js/views/admin/stats.js
+  var statsView = () => `<div class="hero"><div><small>Asistencia global de la plataforma</small><b>${avgAttendance()}%</b><span class="pill ok">${instList().filter(isActive).length} instituciones activas</span></div><button class="btn o" onclick="exportModal()">${ic("down")}Exportar</button></div><div class="grid g2">${card("Asistencia por institución", bars(instList().map((t) => [t.s, demoStats(t).a])))}${card("Distribución global", donut(87, 5, 8))}</div><div class="grid g2">${card("Mapa de asistencia · últimas 14 semanas", heat())}${card(
+    "Ranking de instituciones",
+    table(["Institución", "Estudiantes", "Asistencia"], instList().map((t) => [t.n, demoStats(t).e, pill(demoStats(t).a)]))
+  )}</div>`;
+
+  // js/views/admin/settings.js
+  var settingsView = () => `<div class="grid g2">${card(
+    "Parámetros generales",
+    `<div class="mrow"><label>Periodo vigente</label><input value="2026-II"></div><div class="mrow"><label>Asistencia mínima (%)</label><input type="number" value="75"></div><div class="mrow"><label>Idioma</label><select><option>Español</option><option>English</option></select></div><div class="mrow"><label>Zona horaria</label><select><option>América/Panamá</option><option>América/Bogotá</option></select></div>`
+  )}${card(
+    "Opciones de la plataforma",
+    ["Permitir registro de nuevas instituciones", "Notificaciones por correo", "Modo mantenimiento"].map((t, i) => `<label class="sw"><span>${t}</span><input type="checkbox" ${i < 2 ? "checked" : ""}><i></i></label>`).join("") + `<div class="acts" style="margin:16px 0 0;justify-content:flex-end"><button class="btn g" onclick="toast('Configuración guardada')">Guardar cambios</button></div>`
+  )}</div>`;
+
+  // js/views/admin/index.js
+  var adminViews = {
+    inicio: adminHome,
+    insts: institutionsView,
+    admins: adminsView,
+    stats: statsView,
+    conf: settingsView
+  };
+  var adminHandlers = { ...institutionHandlers, ...adminsHandlers };
+
+  // js/views/iadm/home.js
+  var iadmHome = () => `<div class="grid">${kpi("Estudiantes", "1.248", "#1E3A8A", "users") + kpi("Cursos activos", "42", "#3B5BC7", "book") + kpi("Profesores", "68", "#6366F1", "id") + kpi("Asistencia general", "91,4%", "#10B981", "check")}</div><div class="grid g2">${card("Asistencia por mes (%)", bars([["Ago", 93], ["Sep", 91], ["Oct", 88], ["Nov", 90], ["Dic", 85]]))}${card(
+    "Cursos que requieren atención",
+    table(["Curso", "%"], COURSES.filter((c) => c.attendance < 90).map((c) => [c.name, pill(c.attendance)]))
+  )}</div>`;
+
+  // js/views/iadm/users.js
+  var iadmUsers = () => `<div class="acts"><button class="btn" onclick="toast('Usuario creado')">${ic("plus")}Nuevo usuario</button></div>` + card(
+    "Cuentas del sistema",
+    table(["Nombre", "Correo", "Rol", "Estado", "Acción"], [
+      ["Laura Méndez", "laura.mendez@atrium.edu", "Administrador", statusPill("Activo"), toastBtn("Editar")],
+      ["Carlos Rivas", "c.rivas@atrium.edu", "Profesor", statusPill("Activo"), toastBtn("Editar")],
+      ["Ana Torres", "ana.torres@atrium.edu", "Estudiante", statusPill("Activo"), toastBtn("Editar")],
+      ["Mario Gil", "m.gil@atrium.edu", "Profesor", statusPill("Pendiente"), toastBtn("Aprobar")],
+      ["Sara Núñez", "s.nunez@atrium.edu", "Estudiante", statusPill("Suspendido"), toastBtn("Reactivar")]
+    ])
+  );
+
+  // js/views/iadm/monitoring.js
+  var monitoringView = () => `<div class="grid">${kpi("En seguimiento", "37", "#F59E0B", "users") + kpi("Asistencia semanal", "92%", "#10B981", "check") + kpi("Alertas activas", "5", "#EF4444", "bell")}</div><div class="grid g2">${card(
+    "Estudiantes en seguimiento",
+    table(["Estudiante", "Curso", "Asistencia", "Acción"], [
+      ["Camila Ríos", "Programación", pill(71), toastBtn("Notificar")],
+      ["Diego Soto", "Química", pill(68), toastBtn("Notificar")],
+      ["Sara Núñez", "Física II", pill(73), toastBtn("Notificar")]
+    ])
+  )}${card(
+    "Cursos bajo la meta (90%)",
+    table(["Curso", "Profesor", "Asistencia"], COURSES.filter((c) => c.attendance < 90).map((c) => [c.name, c.prof, pill(c.attendance)]))
+  )}</div>`;
+
+  // js/views/iadm/identity.js
+  var identityPreview = (d) => `<div class="pvw"><div class="pvs" style="background:linear-gradient(180deg,#0B1B54,#1E3A8A)"><span class="lg">${d.logo ? `<img src="${d.logo}" alt="">` : (d.s || "").slice(0, 2)}</span><div><b>ATRIUM</b><br><small>${d.n || ""}</small></div></div><div class="pvb"><b>${d.n || "Nombre de la institución"}</b><br><small style="color:var(--mu)">${d.lema || ""}</small><br><small style="color:var(--mu)">${[d.web, d.mail].filter(Boolean).join(" · ")}</small></div></div>`;
+  function identityView() {
+    if (!state.instDraft || state.instDraft.id != state.inst) state.instDraft = { ...INST[state.inst], id: state.inst };
+    const d = state.instDraft;
+    const field = (label, k) => `<div class="mrow"><label>${label}</label><input value="${d[k] || ""}" oninput="identityField('${k}',this.value)"></div>`;
+    return `<div class="ins"><div class="card"><h3>Identidad de la institución</h3>${field("Nombre", "n")}${field("Nombre corto", "s")}${field("Lema", "lema")}${field("Sitio web", "web")}${field("Correo de contacto", "mail")}<div class="mrow"><label>Logo</label><div class="cp"><input type="file" accept="image/*" onchange="identityLogo(this)">${d.logo ? '<button class="btn o" onclick="identityRemoveLogo()">Quitar</button>' : ""}</div></div><div class="acts" style="justify-content:flex-end;margin:14px 0 0"><button class="btn g" onclick="identitySave()">Guardar cambios</button></div></div><div class="card"><h3>Vista previa</h3><div id="ipv">${identityPreview(d)}</div><p style="color:var(--mu);margin:12px 0 0;font-size:12px">Al guardar, los profesores y estudiantes de esta institución verán estos cambios.</p></div></div>`;
+  }
+  function identityField(key, value) {
+    state.instDraft[key] = value;
+    $("ipv").innerHTML = identityPreview(state.instDraft);
+  }
+  function identityRemoveLogo() {
+    state.instDraft.logo = "";
+    render();
+  }
+  function identityLogo(input) {
+    const f = input.files[0];
+    if (!f) return;
+    if (f.size > 3e5) {
+      input.value = "";
+      return toast("El logo debe pesar menos de 300 KB");
+    }
+    const r = new FileReader();
+    r.onload = () => identityField("logo", r.result);
+    r.readAsDataURL(f);
+  }
+  function identitySave() {
+    const draft = state.instDraft;
+    if (!draft.n.trim() || !draft.s.trim()) return toast("Completa nombre y nombre corto");
+    const { id, ...data } = draft;
+    INST[state.inst] = data;
+    persistInstitutions();
+    applyTheme();
+    render();
+    toast("Identidad actualizada");
+  }
+  var identityHandlers = { identityField, identityRemoveLogo, identityLogo, identitySave };
+
+  // js/views/shared/crud.js
+  var rowActions = (t, i) => `<div class="ra">${iconBtn("edit", "Editar", `editEntity('${t}',${i})`)}${iconBtn("trash", "Eliminar", `deleteEntity('${t}',${i})`, 'style="color:var(--bad)"')}</div>`;
+  var listView = (type, title, columns, rowFn) => `<div class="acts"><button class="btn" onclick="editEntity('${type}',-1)">${ic("plus")}Nuevo ${ENTITY_NAMES[type]}</button></div>` + card(title, table([...columns, "Acciones"], db[type].map((r, i) => [...rowFn(r), rowActions(type, i)])));
+  var crudViews = {
+    profesores: () => listView("prof", "Carga académica", ["Profesor", "Cursos", "Horas/sem", "Carga"], (r) => [r.n, r.c, r.h, progress(Math.min(100, Math.round(r.h / 20 * 100)))]),
+    estudiantes: () => listView("est", "Estudiantes", ["Nombre", "Programa", "Cursos", "Estado"], (r) => [r.n, r.p, r.c, statusPill(r.s)]),
+    cursos: () => listView("cur", "Catálogo de cursos", ["Código", "Curso", "Profesor", "Inscritos"], (r) => [r.k, r.n, r.pr, r.i]),
+    grupos: () => listView("grp", "Grupos", ["Grupo", "Curso", "Profesor", "Estudiantes", "Horario"], (r) => [r.n, r.c, r.pr, r.i, r.h])
+  };
+  function editEntity(type, i) {
+    const d = i < 0 ? {} : db[type][i];
+    const fields = ENTITY_FIELDS[type].map(([k, label, opt]) => {
+      const q = typeof opt == "function" ? opt() : opt;
+      return `<div class="mrow"><label>${label}</label>${Array.isArray(q) ? `<select id="e_${k}">${q.map((x) => `<option ${x == d[k] ? "selected" : ""}>${x}</option>`).join("")}</select>` : `<input id="e_${k}" type="${q || "text"}" value="${d[k] ?? ""}">`}</div>`;
+    }).join("");
+    modal((i < 0 ? "Nuevo " : "Editar ") + ENTITY_NAMES[type], fields, btn("Cancelar", "o", "closeModal()") + btn("Guardar cambios", "g", `saveEntity('${type}',${i})`));
+  }
+  function saveEntity(type, i) {
+    const d = i < 0 ? {} : db[type][i];
+    ENTITY_FIELDS[type].forEach(([k, , opt]) => {
+      const v = $("e_" + k).value;
+      d[k] = opt == "number" ? +v : v;
+    });
+    if (i < 0) db[type].push(d);
+    closeModal();
+    render();
+    toast("Cambios guardados");
+  }
+  function deleteEntity(type, i) {
+    modal(
+      "Eliminar " + ENTITY_NAMES[type],
+      `<p style="margin:0">¿Eliminar <b>${db[type][i].n}</b>? Esta acción no se puede deshacer.</p>`,
+      btn("Cancelar", "o", "closeModal()") + `<button class="btn" style="background:var(--bad)" onclick="deleteEntityOk('${type}',${i})">Eliminar</button>`
+    );
+  }
+  function deleteEntityOk(type, i) {
+    db[type].splice(i, 1);
+    closeModal();
+    render();
+    toast("Eliminado");
+  }
+  var crudHandlers = { editEntity, saveEntity, deleteEntity, deleteEntityOk };
+
+  // js/views/shared/history.js
+  var findRecord = (id) => db.hist.find((h) => h.id == id);
+  function historyView() {
+    const all = state.role != "prof";
+    const list = all ? db.hist : db.hist.filter((h) => h.pr == "Dr. Rivas");
+    const headers = ["Fecha", "Curso", ...all ? ["Profesor"] : [], "Presentes", "Ausentes", "Asistencia", "Acciones"];
+    const rows = list.map((h) => [
+      h.f,
+      h.c,
+      ...all ? [h.pr] : [],
+      h.p,
+      h.a,
+      pill(attendancePct(h)),
+      `<div class="ra">${iconBtn("eye", "Ver detalles", `histView(${h.id})`)}${iconBtn("edit", "Editar", `histEdit(${h.id})`)}${iconBtn("trash", "Eliminar", `histDelete(${h.id})`, 'style="color:var(--bad)"')}</div>`
+    ]);
+    return `<div class="acts"><button class="btn o" onclick="exportModal()">${ic("down")}Exportar</button></div>` + card(all ? "Asistencia dictada por profesores" : "Clases dictadas", table(headers, rows));
+  }
+  function histView(id) {
+    const h = findRecord(id);
+    modal(
+      "Detalle de la clase",
+      `<div class="dl"><div><small>Curso</small><b>${h.c}</b></div><div><small>Fecha</small><b>${h.f}</b></div><div><small>Profesor</small><b>${h.pr}</b></div><div><small>Asistencia</small>${pill(attendancePct(h))}</div><div><small>Presentes</small><b style="color:var(--ok)">${h.p}</b></div><div><small>Ausentes</small><b style="color:var(--bad)">${h.a}</b></div></div>`,
+      btn("Cerrar", "o", "closeModal()") + btn("Editar", "", `histEdit(${id})`)
+    );
+  }
+  function histEdit(id) {
+    const h = findRecord(id);
+    modal(
+      "Editar registro",
+      `<div class="mrow"><label>Fecha</label><input id="ef" value="${h.f}"></div><div class="mrow"><label>Presentes</label><input id="ep" type="number" min="0" value="${h.p}"></div><div class="mrow"><label>Ausentes</label><input id="ea" type="number" min="0" value="${h.a}"></div>`,
+      btn("Cancelar", "o", "closeModal()") + btn("Guardar cambios", "g", `histSave(${id})`)
+    );
+  }
+  function histSave(id) {
+    const h = findRecord(id);
+    h.f = $("ef").value;
+    h.p = +$("ep").value;
+    h.a = +$("ea").value;
+    closeModal();
+    render();
+    toast("Registro actualizado");
+  }
+  function histDelete(id) {
+    const h = findRecord(id);
+    modal(
+      "Eliminar registro",
+      `<p style="margin:0">¿Eliminar la clase de <b>${h.c}</b> del ${h.f}? Esta acción no se puede deshacer.</p>`,
+      btn("Cancelar", "o", "closeModal()") + `<button class="btn" style="background:var(--bad)" onclick="histDeleteOk(${id})">Eliminar</button>`
+    );
+  }
+  function histDeleteOk(id) {
+    db.hist = db.hist.filter((x) => x.id != id);
+    closeModal();
+    render();
+    toast("Registro eliminado");
+  }
+  var historyHandlers = { histView, histEdit, histSave, histDelete, histDeleteOk };
+
+  // js/views/shared/reports.js
+  var reportsView = () => `<div class="hero"><div><small>Asistencia global del periodo</small><b>91,4%</b><span class="pill ok">▲ 2,1% vs. periodo anterior</span></div><button class="btn o" onclick="exportModal()">${ic("down")}Exportar</button></div><div class="grid">${kpi("Sesiones dictadas", "1.204", "#1E3A8A", "cal") + kpi("Ausencias", "312", "#EF4444", "clock") + kpi("Estudiantes en riesgo", "37", "#F59E0B", "users")}</div><div class="grid g2">${card("Mapa de asistencia · últimas 14 semanas", heat())}${card("Distribución", donut(88, 4, 8))}</div><div class="grid g2">${card("Asistencia por curso", COURSES.map((c) => `<div class="hb"><span>${c.name}</span>${progress(c.attendance)}</div>`).join(""))}${card(
+    "Estudiantes en riesgo",
+    table(["Estudiante", "Curso", "%"], [["Camila Ríos", "Programación", pill(71)], ["Diego Soto", "Química", pill(68)], ["Sara Núñez", "Física II", pill(73)]])
+  )}</div>`;
+
+  // js/ui/mail.js
+  var mail = (name, subject, to, message) => `<div class="em"><div class="eh"><div class="av">${name.split(" ").map((x) => x[0]).slice(0, 2).join("")}</div><div><b>${name}</b><br><small>Para: ${to}</small></div></div><h4>${subject}</h4><p>${message}</p><small>Enviado desde ATRIUM</small></div>`;
+
+  // js/views/shared/compose.js
+  function composeView() {
+    const u = USER[state.role];
+    const ch = state.channels;
+    return `<div class="grid g2"><div class="card"><h3>Nuevo mensaje</h3><div class="mrow"><label>Para</label><select id="nc" onchange="previewMessage()"><option>Todos mis estudiantes</option><option>Cálculo I · 42 estudiantes</option><option>Programación · 45 estudiantes</option></select></div><div class="mrow"><label>Asunto</label><input id="ns" oninput="previewMessage()" placeholder="Asunto del aviso"></div><div class="mrow"><label>Canal</label><div class="chs"><button class="tg2 ${ch.c ? "on" : ""}" onclick="toggleChannel('c',this)">Correo</button><button class="tg2 ${ch.p ? "on" : ""}" onclick="toggleChannel('p',this)">Notificación</button></div></div><textarea id="nm" rows="7" oninput="previewMessage()" placeholder="Escribe tu mensaje…"></textarea><div class="acts" style="margin:14px 0 0;justify-content:flex-end"><button class="btn o" onclick="toast('Borrador guardado')">Guardar borrador</button><button class="btn g" id="sb" onclick="sendMessage()">${ic("send")}Enviar</button></div></div><div class="card"><h3>Vista previa</h3><div class="em"><div class="eh"><div class="av">${u.initials}</div><div><b>${u.name}</b><br><small>Para: <span id="pt">Todos mis estudiantes</span></small></div></div><h4 id="ps">(Sin asunto)</h4><p id="pm">El mensaje aparecerá aquí.</p><small>Enviado desde ATRIUM</small></div></div></div>` + card(
+      "Enviados",
+      sentMessages.map((s, i) => `<div class="msg row" onclick="openSent(${i})"><div style="flex:1"><b>${s.s}</b><br><small>${s.c} · ${s.t}</small></div><span class="pill ok">Entregado</span></div>`).join("")
+    );
+  }
+  function toggleChannel(key, el) {
+    state.channels[key] = !state.channels[key];
+    el.classList.toggle("on");
+  }
+  function previewMessage() {
+    $("ps").textContent = $("ns").value || "(Sin asunto)";
+    $("pm").textContent = $("nm").value || "El mensaje aparecerá aquí.";
+    $("pt").textContent = $("nc").value;
+  }
+  function sendMessage() {
+    const subject = $("ns").value, body = $("nm").value, to = $("nc").value;
+    if (!subject.trim() || !body.trim()) return toast("Completa asunto y mensaje");
+    if (!state.channels.c && !state.channels.p) return toast("Elige al menos un canal");
+    $("sb").disabled = true;
+    $("sb").textContent = "Enviando…";
+    setTimeout(() => {
+      sentMessages.unshift({ s: subject, c: to, t: "Ahora", m: body });
+      render();
+      toast("Aviso enviado");
+    }, 900);
+  }
+  function openSent(i) {
+    const s = sentMessages[i];
+    modal("Mensaje enviado", mail(USER[state.role].name, s.s, s.c, s.m), btn("Cerrar", "o", "closeModal()"));
+  }
+  var composeHandlers = { toggleChannel, previewMessage, sendMessage, openSent };
+
+  // js/views/iadm/index.js
+  var iadmViews = {
+    inicio: iadmHome,
+    usuarios: iadmUsers,
+    ...crudViews,
+    // profesores, estudiantes, cursos, grupos
+    hist: historyView,
+    monit: monitoringView,
+    reporte: reportsView,
+    inst: identityView,
+    notif: composeView
+  };
+  var iadmHandlers = { ...identityHandlers, ...crudHandlers };
+
+  // js/views/prof/home.js
+  var profHome = () => `<div class="acts"><button class="btn g" onclick="go('asist')">${ic("check")}Registrar asistencia</button><button class="btn" onclick="go('notif')">${ic("send")}Notificar</button><button class="btn o" onclick="go('hist')">${ic("clock")}Consultar historial</button></div><div class="grid">${kpi("Mis cursos", "2", "#1E3A8A", "book") + kpi("Estudiantes", "87", "#3B5BC7", "users") + kpi("Asistencias registradas", "1.940", "#10B981", "check") + kpi("Asistencia promedio", "95%", "#6366F1", "chart")}</div>` + card("Clases de hoy", table(["Hora", "Curso", "Aula", "Estado"], [["08:00", "Cálculo I", "A-101", '<span class="pill ok">Registrada</span>'], ["10:00", "Programación", "B-204", '<span class="pill wn">Pendiente</span>']]));
+
+  // js/views/prof/students.js
+  var profStudents = () => card(
+    "Alumnos en mis cursos",
+    table(["Estudiante", "Curso", "Asistencias", "Porcentaje"], [
+      ["Ana Torres", "Cálculo I", "27/28", progress(96)],
+      ["Bruno Díaz", "Cálculo I", "24/28", progress(86)],
+      ["Camila Ríos", "Programación", "20/28", progress(71)],
+      ["Elena Paz", "Programación", "28/28", progress(100)]
+    ])
+  );
+
+  // js/views/prof/attendance.js
+  var ROSTER = ["Ana Torres", "Bruno Díaz", "Camila Ríos", "Diego Soto", "Elena Paz", "Felipe Luna", "Gabriela Ortiz", "Hugo Vargas", "Inés Molina", "Jorge Cruz"];
+  var attendanceView = () => state.session ? takeAttendance() : `<div class="acts"><button class="btn g" onclick="newSession()">${ic("plus")}Crear asistencia</button></div>` + card(
+    "Sesiones recientes",
+    table(
+      ["Fecha", "Curso", "Grupo", "Presentes", "Ausentes", "Asistencia"],
+      db.hist.filter((h) => h.pr == "Dr. Rivas").map((h) => [h.f, h.c, h.g || "A", h.p, h.a, pill(attendancePct(h))])
+    )
+  );
+  function takeAttendance() {
+    const s = state.session, r = s.r, p = r.filter((x) => x[1] === 1).length, a = r.filter((x) => x[1] === 0).length;
+    return `<div class="card" style="margin-bottom:16px"><div class="chips"><span>${ic("book")}${s.c}</span><span>${ic("users")}${s.g}</span><span>${ic("cal")}${s.f}</span><span>${ic("clock")}${s.h}</span><span>${ic("id")}Dr. Carlos Rivas</span></div></div><div class="grid">${kpi("Presentes", p, "#10B981", "check") + kpi("Ausentes", a, "#EF4444", "users") + kpi("Sin marcar", r.length - p - a, "#F59E0B", "clock")}</div>` + card(
+      "Lista de estudiantes · " + r.length,
+      `<div class="bar" style="margin-bottom:14px"><i style="width:${(p + a) / r.length * 100}%;background:var(--ok)"></i></div><div class="acts" style="margin-bottom:6px"><button class="btn o" onclick="markAll()">Marcar todos presentes</button></div>` + r.map(
+        (x, i) => `<div class="stu"><div class="av sm">${x[0][0]}</div><b>${x[0]}</b><div class="seg"><button class="${x[1] === 1 ? "on ok" : ""}" onclick="mark(${i},1)">Asistió</button><button class="${x[1] === 0 ? "on no" : ""}" onclick="mark(${i},0)">No asistió</button></div></div>`
+      ).join("") + `<div class="acts" style="margin:16px 0 0;justify-content:flex-end"><button class="btn o" onclick="cancelSession()">Cancelar</button><button class="btn g" onclick="saveSession()">Guardar asistencia</button></div>`
+    );
+  }
+  function newSession() {
+    const n = /* @__PURE__ */ new Date();
+    modal(
+      "Crear asistencia",
+      `<div class="mrow"><label>Curso</label><select id="sc"><option>Cálculo I</option><option>Programación</option></select></div><div class="mrow"><label>Grupo</label><select id="sg"><option>Grupo A</option><option>Grupo B</option></select></div><div class="mrow"><label>Fecha</label><input id="sf" value="${n.toLocaleDateString("es", { day: "numeric", month: "short", year: "numeric" })}" readonly></div><div class="mrow"><label>Hora</label><input id="sh" type="time" value="${n.toTimeString().slice(0, 5)}"></div><div class="mrow"><label>Profesor</label><input value="Dr. Carlos Rivas" readonly></div>`,
+      btn("Cancelar", "o", "closeModal()") + btn("Crear y tomar lista", "g", "startSession()")
+    );
+  }
+  function startSession() {
+    const g = $("sg").value;
+    state.session = {
+      c: $("sc").value,
+      g,
+      f: $("sf").value,
+      h: $("sh").value,
+      r: (g == "Grupo A" ? ROSTER.slice(0, 7) : ROSTER.slice(3)).map((x) => [x, null])
+    };
+    closeModal();
+    render();
+  }
+  function mark(i, v) {
+    state.session.r[i][1] = v;
+    render();
+  }
+  function markAll() {
+    state.session.r.forEach((x) => x[1] = 1);
+    render();
+  }
+  function cancelSession() {
+    state.session = null;
+    render();
+  }
+  function saveSession() {
+    const s = state.session, r = s.r, pending = r.filter((x) => x[1] === null).length;
+    if (pending) return toast("Faltan " + pending + " estudiantes por marcar");
+    db.hist.unshift({
+      id: Date.now(),
+      f: s.f,
+      c: s.c,
+      g: s.g.slice(-1),
+      pr: "Dr. Rivas",
+      p: r.filter((x) => x[1] === 1).length,
+      a: r.filter((x) => x[1] === 0).length
+    });
+    state.session = null;
+    render();
+    toast("Asistencia guardada");
+  }
+  var attendanceHandlers = { newSession, startSession, mark, markAll, cancelSession, saveSession };
+
+  // js/views/prof/index.js
+  var profViews = {
+    inicio: profHome,
+    estudiantes: profStudents,
+    asist: attendanceView,
+    hist: historyView,
+    notif: composeView,
+    reportes: reportsView
+  };
+  var profHandlers = { ...attendanceHandlers };
+
+  // js/views/est/home.js
+  var estHome = () => `<div class="grid">${kpi("Cursos inscritos", "5", "#1E3A8A", "book") + kpi("Asistencias registradas", "118", "#10B981", "check") + kpi("Ausencias", "9", "#EF4444", "clock") + kpi("Progreso general", "72%", "#3B5BC7", "chart")}</div>` + card("Mi asistencia por curso", table(["Curso", "Asistencias", "Porcentaje"], COURSES.map((c) => [c.name, Math.round(c.attendance * 0.28) + "/28", progress(c.attendance)]))) + `<br>` + card("Progreso del semestre", progress(72));
+
+  // js/views/est/classes.js
+  var estClasses = () => `<div class="grid g2">${card(
+    "Semana actual",
+    `<div class="cal"><div><b>Lun</b><em>08:00 Cálculo</em></div><div><b>Mar</b><em>10:00 Programación</em><em>14:00 Física</em></div><div><b>Mié</b><em>08:00 Cálculo</em></div><div><b>Jue</b><em>09:00 Química</em><em>10:00 Programación</em></div><div><b>Vie</b><em>11:00 Historia</em></div></div>`
+  )}${card("Próximas clases", table(["Cuándo", "Curso", "Aula"], [["Hoy 10:00", "Programación", "B-204"], ["Mañana 08:00", "Cálculo I", "A-101"], ["Jue 09:00", "Química", "L-2"]]))}</div>`;
+
+  // js/views/est/inbox.js
+  var estInbox = () => card(
+    "Bandeja de entrada",
+    NOTIFICATIONS.est.map(
+      (s, i) => `<div class="msg row" onclick="openInbox(${i})">${i < 2 ? '<span class="dot"></span>' : '<span style="width:8px"></span>'}<div class="av" style="width:34px;height:34px;font-size:12px">${s.from[0]}</div><div style="flex:1"><b>${s.title}</b><br><small>${s.from} · ${s.when}</small></div></div>`
+    ).join("")
+  );
+  function openInbox(i) {
+    const s = NOTIFICATIONS.est[i];
+    modal(s.title, mail(s.from, s.title, "Ana Torres", "Hola Ana, te escribimos para informarte sobre este asunto. Revisa los detalles en tu panel de clases."), btn("Cerrar", "o", "closeModal()"));
+  }
+  var inboxHandlers = { openInbox };
+
+  // js/views/est/index.js
+  var estViews = { inicio: estHome, clases: estClasses, notif: estInbox };
+  var estHandlers = { ...inboxHandlers };
+
+  // js/views/shared/profile.js
+  var FIELDS = [["Nombre completo", "n"], ["Correo institucional", "e"], ["Teléfono", "t"], ["Idioma", "i"]];
+  var PREFS = ["Alertas por correo", "Notificaciones en el panel", "Resumen semanal"];
+  function profileView() {
+    const role = state.role, editing = state.profileEditing, u = USER[role];
+    const d = state.profileData[role] || (state.profileData[role] = { n: u.name, e: u.email, t: "+507 6000-0000", i: "Español" });
+    const student = role == "est";
+    return `<div class="card pf"><div class="cover"></div><div class="pfh"><div class="av xl">${u.initials}</div><div style="flex:1;min-width:160px"><h3 style="font-size:20px;margin:0">${d.n}</h3><span style="color:var(--mu)">${u.label}</span></div><span class="pill ok">Cuenta activa</span>` + (editing ? btn("Cancelar", "o", "profileEdit(false)") + btn("Guardar", "g", "profileSave()") : btn(ic("edit") + "Editar perfil", "", "profileEdit(true)")) + `</div></div><div class="grid g2"><div class="card"><h3>Información personal</h3><div class="kv">${FIELDS.map(([label, k]) => `<div class="f"><span>${label}</span>${editing ? `<input id="pf_${k}" value="${d[k]}">` : `<b>${d[k]}</b>`}</div>`).join("")}</div></div><div><div class="card" style="display:flex;gap:18px;align-items:center;margin-bottom:16px;flex-wrap:wrap">${ring(student ? 92 : 95)}<div><b>Asistencia ${student ? "personal" : "de mis cursos"}</b><br><span style="color:var(--mu)">${student ? "Ingeniería · Semestre 4" : "Periodo 2026-II"}</span><br>${statusPill(student ? "Regular" : "Activo")}</div></div><div class="card"><h3>Preferencias</h3>${PREFS.map((t, i) => `<label class="sw ${editing ? "" : "off"}"><span>${t}</span><input type="checkbox" ${i < 2 ? "checked" : ""} ${editing ? "" : "disabled"}><i></i></label>`).join("")}</div></div></div>`;
+  }
+  function profileEdit(on) {
+    state.profileEditing = on;
+    render();
+  }
+  function profileSave() {
+    const d = state.profileData[state.role];
+    ["n", "e", "t", "i"].forEach((k) => d[k] = $("pf_" + k).value);
+    state.profileEditing = false;
+    render();
+    toast("Perfil actualizado");
+  }
+  var profileHandlers = { profileEdit, profileSave };
+
+  // js/views/shared/export.js
+  function exportModal() {
+    modal(
+      "Exportar historial",
+      `<p style="margin:0 0 12px;color:var(--mu)">Elige el formato del archivo.</p><div class="chs">${["PDF", "Excel", "CSV"].map((f) => `<button class="tg2" onclick="closeModal();toast('Exportado como ${f}')">${ic("down")}&nbsp;${f}</button>`).join("")}</div>`
+    );
+  }
+
+  // js/main.js
+  Object.assign(
+    window,
+    { toast, closeModal, go, toggleGroup, exportModal },
+    historyHandlers,
+    composeHandlers,
+    profileHandlers,
+    adminHandlers,
+    iadmHandlers,
+    profHandlers,
+    estHandlers
+  );
+  registerViews("admin", { ...adminViews, perfil: profileView });
+  registerViews("iadm", { ...iadmViews, perfil: profileView });
+  registerViews("prof", { ...profViews, perfil: profileView });
+  registerViews("est", { ...estViews, perfil: profileView });
+  $("burger").innerHTML = ic("menu");
+  $("bell").innerHTML = ic("bell") + '<span class="badge" id="bc"></span>';
+  $("burger").onclick = () => $("side").classList.toggle("open");
+  $("bell").onclick = () => go("notif");
+  $("inst").onchange = (e) => {
+    switchInstitution(e.target.value);
+    state.instDraft = null;
+    applyTheme();
+    render();
+  };
+  $("role").onchange = (e) => {
+    state.role = e.target.value;
+    state.sec = "inicio";
+    applyTheme();
+    render();
+  };
+  startClock();
+  applyTheme();
+  render();
+})();
+</script></body></html>

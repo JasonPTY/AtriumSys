@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>ATRIUM · Gestión académica</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/principal.css">
+</head>
+
+<body>
+
+<!-- ========== SIDEBAR ========== -->
+<aside id="side">
+    <div class="logo">ATRI<b>UM</b></div>
+    <div class="sub">Seguimiento de asistencia</div>
+
+    <nav id="nav"></nav>
+
+    <div class="me">
+        <div class="av" id="mav"></div>
+        <div>
+            <div id="mnm" style="font-weight:600"></div>
+            <div id="mrl" style="opacity:.7;font-size:12px"></div>
+        </div>
+    </div>
+</aside>
+
+<!-- ========== CONTENEDOR PRINCIPAL ========== -->
+<div id="main">
+
+    <!-- Header -->
+    <header>
+        <button class="ib" id="burger" aria-label="Menú"></button>
+
+        <div>
+            <h1 id="hi"></h1>
+            <p id="per">Periodo 2026-II · Semestre en curso</p>
+        </div>
+
+        <div class="sp"></div>
+
+        <label style="font-size:12px;color:var(--mu)">Institución
+            <select id="inst"></select>
+        </label>
+
+        <label style="font-size:12px;color:var(--mu)">Vista
+            <select id="role">
+                <option value="admin">Administrador general</option>
+                <option value="iadm">Admin institucional</option>
+                <option value="prof">Profesor</option>
+                <option value="est">Estudiante</option>
+            </select>
+        </label>
+
+        <div class="clock">
+            <b id="ck"></b>
+            <p id="dt"></p>
+        </div>
+
+        <button class="ib" id="bell" aria-label="Notificaciones"></button>
+    </header>
+
+    <!-- Contenido -->
+    <main id="view"></main>
+
+    <!-- Footer -->
+    <footer>
+        <span>© 2026 ATRIUM</span>
+        <span>Versión 1.0.0</span>
+        <span class="sp"></span>
+        <a href="#">Centro de ayuda</a>
+        <a href="#">Soporte</a>
+        <a href="#">Privacidad</a>
+    </footer>
+
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+
+</html>
