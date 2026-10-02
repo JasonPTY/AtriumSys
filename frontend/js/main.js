@@ -11,6 +11,7 @@ import { switchInstitution } from "./data/school.js";
 import { ic } from "./ui/icons.js";
 import { toast } from "./ui/toast.js";
 import { closeModal } from "./ui/modal.js";
+import { bootAuth } from "./auth/index.js";
 
 import { adminViews, adminHandlers } from "./views/admin";
 import { iadmViews, iadmHandlers } from "./views/iadm";
@@ -46,23 +47,14 @@ $("bell").innerHTML = ic("bell") + '<span class="badge" id="bc"></span>';
 $("burger").onclick = () => $("side").classList.toggle("open");
 $("bell").onclick = () => go("notif");
 
-// Selector "Institucion" (en produccion sale de la sesion).
-$("inst").onchange = (e) => {
-  switchInstitution(e.target.value);
-  state.instDraft = null;
-  applyTheme();
-  render();
-};
-
-// Selector "Vista" (reemplazar por el login real).
-$("role").onchange = (e) => {
-  state.role = e.target.value;
-  state.sec = "inicio";
-  applyTheme();
-  render();
-};
+// Los selectores "Institucion" y "Vista" de demostracion se reemplazaron por el login:
+// el rol y la institucion salen de la sesion (ver js/auth/).
 
 // ---- 4) Arranque -----------------------------------------------------------------
 startClock();
-applyTheme();
-render();
+bootAuth({
+  onEnter: () => {
+    applyTheme();
+    render();
+  },
+});
