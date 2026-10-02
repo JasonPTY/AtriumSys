@@ -7,14 +7,16 @@
     <title>ATRIUM · Gestión académica</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/principal.css">
 </head>
 
-<body>
+<body class="guest">
+
+<!-- ========== ACCESO (login) ========== -->
+<div id="auth"></div>
 
 <!-- ========== SIDEBAR ========== -->
 <aside id="side">
-    <div class="logo">ATRI<b>UM</b></div>
+    <div class="logo">ATR<b>IUM</b></div>
     <div class="sub">Seguimiento de asistencia</div>
 
     <nav id="nav"></nav>
@@ -37,16 +39,16 @@
 
         <div>
             <h1 id="hi"></h1>
-            <p id="per">Periodo 2026-II · Semestre en curso</p>
+            <p id="per">Periodo 2027-II · Semestre en curso</p>
         </div>
 
         <div class="sp"></div>
 
-        <label style="font-size:12px;color:var(--mu)">Institución
+        <label hidden style="font-size:12px;color:var(--mu)">Institución
             <select id="inst"></select>
         </label>
 
-        <label style="font-size:12px;color:var(--mu)">Vista
+        <label hidden style="font-size:12px;color:var(--mu)">Vista
             <select id="role">
                 <option value="admin">Administrador general</option>
                 <option value="iadm">Admin institucional</option>

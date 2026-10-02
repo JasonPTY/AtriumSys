@@ -1,1286 +1,2109 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ATRIUM · Gestión académica</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-    :root {
-        --c1: #1E3A8A;
-        --ac: #10B981;
-        --pri: #1E3A8A;
-        --pri2: #3B5BC7;
-        --bg: #F3F4F6;
-        --card: #fff;
-        --tx: #111827;
-        --mu: #6B7280;
-        --bd: #E5E7EB;
-        --ok: #10B981;
-        --bad: #EF4444;
-        --warn: #F59E0B;
-        --side: #1E3A8A;
-        --okb: #D1FAE5;
-        --badb: #FEE2E2;
-        --wb: #FEF3C7;
-        --hov: #F9FAFB;
+<html lang="es">
 
-        box-sizing: border-box;
-        padding-top: env(safe-area-inset-top, 0px);
-        padding-bottom: env(safe-area-inset-bottom, 0px);
-    }
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>ATRIUM · Gestión académica</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+/* =========================================================
+   01 · TOKENS
+   ========================================================= */
 
-    /* Modo oscuro automático (si el usuario no fuerza el claro) */
-    @media (prefers-color-scheme: dark) {
-        :root:not([data-theme="light"]) {
-            --bg: #0F172A;
-            --card: #1E293B;
-            --tx: #F1F5F9;
-            --mu: #94A3B8;
-            --bd: #334155;
-            --side: #172554;
-            --okb: #064E3B;
-            --badb: #7F1D1D;
-            --wb: #78350F;
-            --hov: #243247;
-            --pri: #93B4FF;
-        }
-    }
+:root {
+    /* Colores principales */
+    --c1: #1E3A8A;
+    --ac: #10B981;
+    --pri: #1E3A8A;
+    --pri2: #3B5BC7;
 
-    /* Modo oscuro forzado */
-    :root[data-theme="dark"] {
+    /* Superficies y texto */
+    --bg: #F3F4F6;
+    --card: #FFFFFF;
+    --tx: #111827;
+    --mu: #6B7280;
+    --bd: #E5E7EB;
+
+    /* Estados */
+    --ok: #10B981;
+    --bad: #EF4444;
+    --warn: #F59E0B;
+
+    /* Componentes */
+    --side: #1E3A8A;
+    --hov: #F9FAFB;
+
+    /* Fondos de estado */
+    --okb: #D1FAE5;
+    --badb: #FEE2E2;
+    --wb: #FEF3C7;
+
+    /* Modelo de caja */
+    box-sizing: border-box;
+
+    /* Safe area */
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+
+/* =========================================================
+   02 · TEMA OSCURO AUTOMÁTICO
+   ========================================================= */
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
         --bg: #0F172A;
         --card: #1E293B;
         --tx: #F1F5F9;
         --mu: #94A3B8;
         --bd: #334155;
+
         --side: #172554;
+        --hov: #243247;
+
         --okb: #064E3B;
         --badb: #7F1D1D;
         --wb: #78350F;
-        --hov: #243247;
+
         --pri: #93B4FF;
     }
+}
 
-    html {
-        scroll-padding-top: env(safe-area-inset-top, 0px);
+
+/* =========================================================
+   03 · TEMA OSCURO MANUAL
+   ========================================================= */
+
+:root[data-theme="dark"] {
+    --bg: #0F172A;
+    --card: #1E293B;
+    --tx: #F1F5F9;
+    --mu: #94A3B8;
+    --bd: #334155;
+
+    --side: #172554;
+    --hov: #243247;
+
+    --okb: #064E3B;
+    --badb: #7F1D1D;
+    --wb: #78350F;
+
+    --pri: #93B4FF;
+}
+
+
+/* =========================================================
+   04 · SAFE AREA / NAVEGACIÓN
+   ========================================================= */
+
+html {
+    scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+/* =========================================================
+   02 · BASE
+   Reset, tipografía, body e iconos SVG
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font: 14px/1.5 Inter, Roboto, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--tx);
+}
+
+
+/* =========================================================
+   ICONOS SVG
+   ========================================================= */
+
+svg.i {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex: none;
+}
+/* =========================================================
+   03 · SHELL
+   Sidebar, navegación, usuario, header y estructura principal
+   ========================================================= */
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+#side {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    width: 248px;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 20px 12px;
+    padding-top: calc(20px + env(safe-area-inset-top, 0px));
+
+    background: var(--side);
+    color: #fff;
+
+    z-index: 20;
+    transition: transform .2s;
+}
+
+
+/* =========================================================
+   MARCA
+   ========================================================= */
+
+.logo {
+    padding: 0 10px 4px;
+
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: .5px;
+}
+
+.logo b {
+    color: var(--ac, #6EE7B7);
+}
+
+.sub {
+    padding: 0 10px 18px;
+
+    font-size: 12px;
+    opacity: .7;
+}
+
+
+/* =========================================================
+   NAVEGACIÓN
+   ========================================================= */
+
+#nav button {
+    all: unset;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 2px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+    color: #DBE4FF;
+}
+
+#nav button:hover {
+    background: rgba(255, 255, 255, .1);
+}
+
+#nav button.on {
+    background: #fff;
+    color: #1E3A8A;
+    font-weight: 600;
+}
+
+#nav button:focus-visible {
+    outline: 2px solid #6EE7B7;
+}
+
+
+/* =========================================================
+   USUARIO
+   ========================================================= */
+
+.me {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-top: auto;
+    padding: 10px;
+
+    border-top: 1px solid rgba(255, 255, 255, .15);
+
+    font-size: 13px;
+}
+
+.av {
+    width: 38px;
+    height: 38px;
+
+    display: grid;
+    place-items: center;
+
+    flex: none;
+
+    border-radius: 50%;
+
+    background: #10B981;
+    color: #fff;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================= */
+
+#main {
+    display: flex;
+    flex-direction: column;
+
+    min-height: 100vh;
+    margin-left: 248px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+
+    padding: 14px 24px;
+
+    background: var(--card);
+    border-bottom: 1px solid var(--bd);
+
+    z-index: 10;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 18px;
+}
+
+header p {
+    margin: 0;
+
+    color: var(--mu);
+    font-size: 12px;
+}
+
+.sp {
+    flex: 1;
+}
+
+
+/* =========================================================
+   CONTROLES DEL HEADER
+   ========================================================= */
+
+#burger {
+    display: none;
+}
+
+.ib {
+    all: unset;
+
+    position: relative;
+
+    padding: 8px;
+    border-radius: 8px;
+
+    cursor: pointer;
+    color: var(--mu);
+}
+
+.ib:hover {
+    background: var(--bg);
+}
+
+.badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+
+    padding: 0 5px;
+
+    background: var(--bad);
+    color: #fff;
+
+    border-radius: 9px;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   CONTROLES DE FORMULARIO
+   ========================================================= */
+
+select,
+input,
+textarea {
+    max-width: 100%;
+
+    padding: 8px 10px;
+
+    font: inherit;
+    color: var(--tx);
+
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: 8px;
+}
+
+
+/* =========================================================
+   RELOJ
+   ========================================================= */
+
+.clock {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.clock b {
+    color: var(--pri);
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   CONTENIDO
+   ========================================================= */
+
+main {
+    flex: 1;
+    padding: 24px;
+}
+/* =========================================================
+   04 · COMPONENTES
+   Grid, cards, estadísticas, tablas, estados, botones,
+   calendario, formularios, footer y notificaciones
+   ========================================================= */
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.g2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.card {
+    padding: 18px;
+
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: 12px;
+}
+
+.card h3 {
+    margin: 0 0 12px;
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   ESTADÍSTICAS
+   ========================================================= */
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.stat .ic {
+    width: 44px;
+    height: 44px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 10px;
+
+    color: #fff;
+}
+
+.stat b {
+    display: block;
+
+    font-size: 24px;
+    line-height: 1.1;
+}
+
+.stat span {
+    color: var(--mu);
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   BARRAS DE PROGRESO
+   ========================================================= */
+
+.bar {
+    height: 8px;
+    min-width: 80px;
+
+    overflow: hidden;
+
+    background: var(--bd);
+    border-radius: 4px;
+}
+
+.bar i {
+    display: block;
+    height: 100%;
+}
+
+
+/* =========================================================
+   TABLAS
+   ========================================================= */
+
+.tw {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 480px;
+
+    border-collapse: collapse;
+}
+
+th {
+    padding: 8px 10px;
+
+    text-align: left;
+
+    color: var(--mu);
+    font-size: 12px;
+    font-weight: 500;
+
+    border-bottom: 1px solid var(--bd);
+}
+
+td {
+    padding: 10px;
+
+    border-bottom: 1px solid var(--bd);
+}
+
+tr:hover td {
+    background: var(--hov);
+}
+
+
+/* =========================================================
+   PILLS / ESTADOS
+   ========================================================= */
+
+.pill {
+    padding: 2px 10px;
+
+    border-radius: 99px;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    white-space: nowrap;
+}
+
+.ok {
+    background: var(--okb);
+    color: #047857;
+}
+
+.bad {
+    background: var(--badb);
+    color: #B91C1C;
+}
+
+.wn {
+    background: var(--wb);
+    color: #B45309;
+}
+
+
+/* =========================================================
+   ESTADOS · TEMA OSCURO
+   ========================================================= */
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .ok {
+        color: #6EE7B7;
     }
 
-
-    /* =========================================================
-       02 · BASE
-       ========================================================= */
-    * {
-        box-sizing: border-box;
+    :root:not([data-theme="light"]) .bad {
+        color: #FCA5A5;
     }
 
-    body {
-        margin: 0;
-        font: 14px/1.5 Inter, Roboto, system-ui, sans-serif;
-        background: var(--bg);
-        color: var(--tx);
+    :root:not([data-theme="light"]) .wn {
+        color: #FCD34D;
     }
-
-    svg.i {
-        width: 20px;
-        height: 20px;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 1.8;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        flex: none;
-    }
-
-    select,
-    input,
-    textarea {
-        font: inherit;
-        color: var(--tx);
-        background: var(--card);
-        border: 1px solid var(--bd);
-        border-radius: 8px;
-        padding: 8px 10px;
-        max-width: 100%;
-    }
-
-    main {
-        padding: 24px;
-        flex: 1;
-    }
-
-    main h2 {
-        font-size: 24px;
-        letter-spacing: -.02em;
-        font-weight: 700;
-    }
+}
 
 
-    /* =========================================================
-       03 · SHELL
-       ========================================================= */
+/* =========================================================
+   BOTONES
+   ========================================================= */
 
-    /* ---- Sidebar ---- */
+.btn {
+    all: unset;
+    box-sizing: border-box;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 9px 16px;
+
+    background: var(--pri2);
+    color: #fff;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn:hover {
+    filter: brightness(1.1);
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--ok);
+    outline-offset: 2px;
+}
+
+.btn.g {
+    background: var(--ok);
+}
+
+.btn.o {
+    background: transparent;
+    color: var(--pri);
+    border: 1px solid var(--bd);
+}
+
+
+/* =========================================================
+   ACCIONES
+   ========================================================= */
+
+.acts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   TOGGLE
+   ========================================================= */
+
+.tg {
+    all: unset;
+
+    padding: 4px 12px;
+
+    border-radius: 99px;
+
+    cursor: pointer;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   MENSAJES
+   ========================================================= */
+
+.msg {
+    padding: 12px 0;
+
+    border-bottom: 1px solid var(--bd);
+}
+
+.msg:last-child {
+    border: 0;
+}
+
+.msg small {
+    color: var(--mu);
+}
+
+
+/* =========================================================
+   CALENDARIO
+   ========================================================= */
+
+.cal {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.cal div {
+    min-height: 90px;
+
+    padding: 8px;
+
+    background: var(--bg);
+    border-radius: 8px;
+
+    font-size: 12px;
+}
+
+.cal b {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.cal em {
+    display: block;
+
+    margin-top: 4px;
+    padding: 2px 6px;
+
+    background: var(--pri2);
+    color: #fff;
+
+    border-radius: 4px;
+
+    font-style: normal;
+}
+
+
+/* =========================================================
+   FORMULARIOS
+   ========================================================= */
+
+.form {
+    display: grid;
+    gap: 10px;
+}
+
+.form label {
+    color: var(--mu);
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    padding: 16px 24px;
+
+    background: var(--card);
+    border-top: 1px solid var(--bd);
+
+    color: var(--mu);
+    font-size: 12px;
+}
+
+footer a {
+    color: var(--pri);
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   TOAST / NOTIFICACIÓN
+   ========================================================= */
+
+.toast {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+
+    padding: 10px 16px;
+
+    background: var(--tx);
+    color: var(--bg);
+
+    border-radius: 8px;
+
+    z-index: 50;
+}
+/* =========================================================
+   05 · REFINAMIENTOS VISUALES
+   Sobrescriben componentes definidos en 03/04
+   ========================================================= */
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+#side {
+    background: linear-gradient(180deg, #1E3A8A, #122466);
+}
+
+#nav button {
+    border-radius: 10px;
+}
+
+#nav button.on {
+    background: rgba(255, 255, 255, .14);
+    color: #fff;
+    box-shadow: inset 3px 0 0 #10B981;
+}
+
+
+/* =========================================================
+   MARCA
+   ========================================================= */
+
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header {
+    background: color-mix(in srgb, var(--card) 90%, transparent);
+    backdrop-filter: blur(8px);
+}
+
+.clock b {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.card {
+    border-radius: 16px;
+
+    box-shadow:
+            0 1px 2px rgba(16, 24, 40, .05),
+            0 10px 24px -14px rgba(30, 58, 138, .18);
+}
+
+.card h3 {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   TABLAS
+   ========================================================= */
+
+th {
+    background: var(--bg);
+    border: 0;
+    font-weight: 600;
+}
+
+th:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+th:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+
+/* =========================================================
+   TÍTULOS DE CONTENIDO
+   ========================================================= */
+
+main h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -.02em;
+}
+
+
+/* =========================================================
+   KPI
+   ========================================================= */
+
+.kpi {
+    padding: 16px 18px;
+}
+
+.kh {
+    display: flex;
+    justify-content: space-between;
+
+    color: var(--mu);
+    font-size: 13px;
+}
+
+.kh i {
+    display: grid;
+}
+
+.kpi b {
+    display: block;
+
+    margin: 4px 0 6px;
+
+    font-size: 30px;
+    line-height: 1.1;
+    letter-spacing: -.03em;
+}
+
+.kf {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.kf em {
+    font-size: 12px;
+    font-weight: 600;
+    font-style: normal;
+}
+
+.up {
+    color: var(--ok);
+}
+
+.dn {
+    color: var(--bad);
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    margin-bottom: 16px;
+    padding: 24px;
+
+    color: #fff;
+
+    background:
+            radial-gradient(
+                    circle at 90% 0,
+                    var(--pri2),
+                    transparent 55%
+            ),
+            var(--c1);
+
+    border-radius: 16px;
+}
+
+.hero small {
+    display: block;
+    opacity: .8;
+}
+
+.hero b {
+    margin-right: 12px;
+
+    font-size: 44px;
+    letter-spacing: -.03em;
+}
+
+.hero .btn.o {
+    color: #fff;
+    border-color: rgba(255, 255, 255, .4);
+}
+
+
+/* =========================================================
+   MAPA DE CALOR
+   ========================================================= */
+
+.heat {
+    display: grid;
+
+    grid-template-rows: repeat(5, 1fr);
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+
+    gap: 4px;
+}
+
+.heat i {
+    min-height: 16px;
+
+    border-radius: 4px;
+}
+
+.hb {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    align-items: center;
+    gap: 10px;
+
+    padding: 7px 0;
+}
+/* =========================================================
+   06 · PANTALLAS Y FLUJOS
+   Chips, asistencia, perfil, switches, modales y correo
+   ========================================================= */
+
+
+/* =========================================================
+   CHIPS
+   ========================================================= */
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chips span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 12px;
+
+    background: var(--bg);
+    border-radius: 99px;
+
+    font-weight: 500;
+}
+
+.chips svg {
+    width: 16px;
+    height: 16px;
+
+    color: var(--pri2);
+}
+
+
+/* =========================================================
+   LISTA DE ESTUDIANTES / ASISTENCIA
+   ========================================================= */
+
+.stu {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    padding: 10px 0;
+
+    border-bottom: 1px solid var(--bd);
+}
+
+.stu b {
+    flex: 1;
+    min-width: 120px;
+
+    font-weight: 500;
+}
+
+.av.sm {
+    width: 32px;
+    height: 32px;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   SELECTOR SEGMENTADO
+   ========================================================= */
+
+.seg {
+    display: flex;
+
+    overflow: hidden;
+
+    border: 1px solid var(--bd);
+    border-radius: 10px;
+}
+
+.seg button {
+    all: unset;
+
+    padding: 7px 14px;
+
+    cursor: pointer;
+
+    color: var(--mu);
+    font-size: 13px;
+}
+
+.seg .on.ok {
+    background: var(--ok);
+    color: #fff;
+}
+
+.seg .on.no {
+    background: var(--bad);
+    color: #fff;
+}
+
+
+/* =========================================================
+   PERFIL
+   ========================================================= */
+
+.pf {
+    padding: 0;
+    margin-bottom: 16px;
+
+    overflow: hidden;
+}
+
+.cover {
+    height: 96px;
+
+    background:
+            radial-gradient(
+                    circle at 80% 0,
+                    var(--pri2),
+                    transparent 60%
+            ),
+            var(--c1);
+}
+
+.pfh {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    padding: 0 20px 20px;
+    margin-top: -36px;
+}
+
+.av.xl {
+    width: 84px;
+    height: 84px;
+
+    border: 4px solid var(--card);
+
+    font-size: 28px;
+}
+
+
+/* =========================================================
+   SWITCHES
+   ========================================================= */
+
+.sw {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 11px 0;
+
+    border-bottom: 1px solid var(--bd);
+
+    cursor: pointer;
+}
+
+.sw input {
+    display: none;
+}
+
+.sw i {
+    position: relative;
+
+    width: 38px;
+    height: 22px;
+
+    background: var(--bd);
+    border-radius: 99px;
+
+    transition: .2s;
+}
+
+.sw i:after {
+    content: '';
+
+    position: absolute;
+    top: 3px;
+    left: 3px;
+
+    width: 16px;
+    height: 16px;
+
+    background: #fff;
+    border-radius: 50%;
+
+    transition: .2s;
+}
+
+.sw input:checked + i {
+    background: var(--ok);
+}
+
+.sw input:checked + i:after {
+    left: 19px;
+}
+
+
+/* =========================================================
+   ACCIONES RÁPIDAS
+   ========================================================= */
+
+.ra {
+    display: flex;
+    gap: 2px;
+}
+
+.ra .ib {
+    padding: 6px;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.mo {
+    position: fixed;
+    inset: 0;
+
+    display: grid;
+    place-items: center;
+
+    padding: 16px;
+
+    background: rgba(15, 23, 42, .55);
+
+    z-index: 60;
+}
+
+.md {
+    width: 100%;
+    max-width: 460px;
+    max-height: 90vh;
+
+    overflow: auto;
+
+    background: var(--card);
+    border-radius: 14px;
+}
+
+
+/* =========================================================
+   CABECERA DEL MODAL
+   ========================================================= */
+
+.mh {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 14px 18px;
+
+    border-bottom: 1px solid var(--bd);
+}
+
+.mh h3 {
+    margin: 0;
+
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   CUERPO Y FOOTER DEL MODAL
+   ========================================================= */
+
+.mb {
+    padding: 18px;
+}
+
+.mf {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    padding: 0 18px 18px;
+}
+
+
+/* =========================================================
+   DATOS / DETALLES
+   ========================================================= */
+
+.dl {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.dl small {
+    display: block;
+
+    color: var(--mu);
+}
+
+
+/* =========================================================
+   FILAS DE FORMULARIO
+   ========================================================= */
+
+.mrow {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 10px;
+}
+
+.mrow label {
+    color: var(--mu);
+    font-size: 12px;
+}
+
+.mrow input,
+.mrow select,
+textarea {
+    width: 100%;
+}
+
+
+/* =========================================================
+   SELECTORES / TAGS
+   ========================================================= */
+
+.chs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tg2 {
+    all: unset;
+
+    padding: 6px 14px;
+
+    border: 1px solid var(--bd);
+    border-radius: 99px;
+
+    cursor: pointer;
+
+    font-size: 13px;
+}
+
+.tg2.on {
+    background: var(--pri2);
+    color: #fff;
+    border-color: var(--pri2);
+}
+
+
+/* =========================================================
+   CORREO / MENSAJES
+   ========================================================= */
+
+.em {
+    padding: 16px;
+
+    background: var(--bg);
+    border: 1px solid var(--bd);
+    border-radius: 10px;
+}
+
+.eh {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-bottom: 10px;
+}
+
+.em h4 {
+    margin: 8px 0;
+
+    font-size: 16px;
+}
+
+.em p {
+    margin: 0 0 12px;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   INDICADORES Y FILAS
+   ========================================================= */
+
+.dot {
+    width: 8px;
+    height: 8px;
+
+    flex: none;
+
+    background: var(--pri2);
+    border-radius: 50%;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    cursor: pointer;
+}
+/* =========================================================
+   07 · RESPONSIVE Y NAVEGACIÓN AVANZADA
+   Navegación agrupada, datos clave-valor y media queries
+   ========================================================= */
+
+
+/* =========================================================
+   NAVEGACIÓN AGRUPADA
+   ========================================================= */
+
+#side {
+    background:
+            radial-gradient(
+                    130% 55% at 0 100%,
+                    color-mix(in srgb, var(--ac) 30%, transparent),
+                    transparent 60%
+            ),
+            linear-gradient(
+                    180deg,
+                    color-mix(in srgb, var(--c1) 55%, #000),
+                    var(--c1)
+            );
+}
+
+#nav {
+    flex: 1;
+    overflow-y: auto;
+}
+
+
+/* Elementos principales y grupos */
+
+#nav .ni,
+#nav .gh {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    padding: 6px 8px;
+    margin-bottom: 2px;
+
+    border: 0;
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    background: none;
+    color: #C7D4FF;
+
+    font: inherit;
+}
+
+#nav .ti {
+    width: 32px;
+    height: 32px;
+
+    display: grid;
+    place-items: center;
+
+    flex: none;
+
+    background: rgba(255, 255, 255, .08);
+    border-radius: 10px;
+}
+
+
+/* Hover */
+
+#nav .ni:hover,
+#nav .gh:hover {
+    background: rgba(255, 255, 255, .09);
+    color: #fff;
+}
+
+
+/* Elemento activo */
+
+#nav .ni.on {
+    background: #fff;
+    color: var(--c1);
+    font-weight: 600;
+
+    box-shadow: 0 8px 18px -8px rgba(0, 0, 0, .5);
+}
+
+#nav .ni.on .ti {
+    background: var(--ac);
+    color: #fff;
+}
+
+
+/* Cabecera de grupo */
+
+#nav .gh .lb {
+    flex: 1;
+
+    text-align: left;
+
+    font-size: 12px;
+    opacity: .7;
+}
+
+#nav .gh .cv {
+    width: 16px;
+    height: 16px;
+
+    transition: .2s;
+}
+
+#nav .gh.op .cv {
+    transform: rotate(180deg);
+}
+
+
+/* Hijos del grupo */
+
+#nav .ch {
+    margin: 0 0 8px 24px;
+    padding-left: 10px;
+
+    border-left: 1px solid rgba(255, 255, 255, .18);
+}
+
+#nav .ch .ni {
+    padding: 4px 8px;
+    font-size: 13px;
+}
+
+#nav .ch .ti {
+    width: 26px;
+    height: 26px;
+
+    border-radius: 8px;
+}
+
+#nav .ch .ti svg {
+    width: 15px;
+    height: 15px;
+}
+
+
+/* =========================================================
+   DATOS CLAVE / VALOR
+   ========================================================= */
+
+.kv {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 18px;
+}
+
+.f span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--mu);
+    font-size: 12px;
+}
+
+.f b {
+    display: block;
+
+    padding: 9px 0;
+
+    border-bottom: 1px solid var(--bd);
+
+    font-weight: 500;
+
+    word-break: break-word;
+}
+
+.f input {
+    width: 100%;
+}
+
+
+/* =========================================================
+   SWITCH DESACTIVADO
+   ========================================================= */
+
+.sw.off {
+    opacity: .55;
+    cursor: default;
+}
+
+
+/* =========================================================
+   TABLET · 861px — 1100px
+   Sidebar compacta
+   ========================================================= */
+
+@media (min-width: 861px) and (max-width: 1100px) {
+
+    /* Sidebar */
+
     #side {
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        width: 248px;
-        display: flex;
-        flex-direction: column;
-        padding: 20px 12px;
-        padding-top: calc(20px + env(safe-area-inset-top, 0px));
-        color: #fff;
-        z-index: 20;
-        transition: transform .2s;
-        background:
-                radial-gradient(130% 55% at 0 100%, color-mix(in srgb, var(--ac) 30%, transparent), transparent 60%),
-                linear-gradient(180deg, color-mix(in srgb, var(--c1) 55%, #000), var(--c1));
+        width: 68px;
+
+        padding-left: 8px;
+        padding-right: 8px;
     }
 
-    /* ---- Marca ---- */
+    .lb,
+    .sub,
+    .me > div:last-child {
+        display: none;
+    }
+
     .logo {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 22px;
-        font-weight: 800;
-        letter-spacing: .5px;
-        padding: 0 10px 4px;
+        padding: 0;
+        text-align: center;
+        font-size: 11px;
     }
 
-    .logo b {
-        color: var(--ac, #6EE7B7);
+    #main {
+        margin-left: 68px;
     }
 
-    .sub {
-        padding: 0 10px 18px;
-        font-size: 12px;
-        opacity: .7;
+    .me {
+        justify-content: center;
     }
 
-    /* ---- Navegación ---- */
-    #nav {
-        flex: 1;
-        overflow-y: auto;
-    }
 
-    /* Botones simples (legacy) */
-    #nav button {
-        all: unset;
-        box-sizing: border-box;
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        width: 100%;
-        padding: 10px 12px;
-        border-radius: 10px;
-        cursor: pointer;
-        color: #DBE4FF;
-        margin-bottom: 2px;
-    }
+    /* Navegación */
 
-    #nav button:hover {
-        background: rgba(255, 255, 255, .1);
-    }
-
-    #nav button.on {
-        background: rgba(255, 255, 255, .14);
-        color: #fff;
-        font-weight: 600;
-        box-shadow: inset 3px 0 0 #10B981;
-    }
-
-    #nav button:focus-visible {
-        outline: 2px solid #6EE7B7;
-    }
-
-    /* Navegación agrupada */
-    #nav .ni,
     #nav .gh {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        width: 100%;
-        padding: 6px 8px;
-        border-radius: 12px;
-        cursor: pointer;
-        color: #C7D4FF;
-        background: none;
-        border: 0;
-        font: inherit;
-        margin-bottom: 2px;
-    }
-
-    #nav .ni:hover,
-    #nav .gh:hover {
-        background: rgba(255, 255, 255, .09);
-        color: #fff;
-    }
-
-    #nav .ni.on {
-        background: #fff;
-        color: var(--c1);
-        font-weight: 600;
-        box-shadow: 0 8px 18px -8px rgba(0, 0, 0, .5);
-    }
-
-    #nav .ti {
-        width: 32px;
-        height: 32px;
-        border-radius: 10px;
-        background: rgba(255, 255, 255, .08);
-        display: grid;
-        place-items: center;
-        flex: none;
-    }
-
-    #nav .ni.on .ti {
-        background: var(--ac);
-        color: #fff;
-    }
-
-    #nav .gh .lb {
-        flex: 1;
-        text-align: left;
-        font-size: 12px;
-        opacity: .7;
-    }
-
-    #nav .gh .cv {
-        width: 16px;
-        height: 16px;
-        transition: .2s;
-    }
-
-    #nav .gh.op .cv {
-        transform: rotate(180deg);
+        display: none;
     }
 
     #nav .ch {
-        margin: 0 0 8px 24px;
-        padding-left: 10px;
-        border-left: 1px solid rgba(255, 255, 255, .18);
+        display: block !important;
+
+        margin: 0;
+        padding: 0;
+
+        border: 0;
     }
 
-    #nav .ch .ni {
-        font-size: 13px;
-        padding: 4px 8px;
+    #nav .ni {
+        justify-content: center;
+        padding: 5px 0;
     }
 
     #nav .ch .ti {
-        width: 26px;
-        height: 26px;
-        border-radius: 8px;
+        width: 32px;
+        height: 32px;
     }
 
     #nav .ch .ti svg {
-        width: 15px;
-        height: 15px;
+        width: 20px;
+        height: 20px;
+    }
+}
+
+
+/* =========================================================
+   MÓVIL · Hasta 520px
+   ========================================================= */
+
+@media (max-width: 520px) {
+
+    .mrow {
+        grid-template-columns: 1fr;
     }
 
-    /* ---- Usuario ---- */
-    .me {
-        margin-top: auto;
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        padding: 10px;
-        border-top: 1px solid rgba(255, 255, 255, .15);
-        font-size: 13px;
-    }
-
-    .av {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        background: #10B981;
-        color: #fff;
-        display: grid;
-        place-items: center;
-        font-weight: 700;
-        flex: none;
-    }
-
-    .av.sm {
-        width: 32px;
-        height: 32px;
-        font-size: 13px;
-    }
-
-    .av.xl {
-        width: 84px;
-        height: 84px;
-        font-size: 28px;
-        border: 4px solid var(--card);
-    }
-
-    /* ---- Contenedor principal ---- */
-    #main {
-        margin-left: 248px;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* ---- Header ---- */
-    header {
-        display: flex;
-        gap: 14px;
-        align-items: center;
-        flex-wrap: wrap;
-        padding: 14px 24px;
-        background: color-mix(in srgb, var(--card) 90%, transparent);
-        backdrop-filter: blur(8px);
-        border-bottom: 1px solid var(--bd);
-        position: sticky;
-        top: env(safe-area-inset-top, 0px);
-        z-index: 10;
-    }
-
-    header h1 {
-        font-size: 18px;
-        margin: 0;
-    }
-
-    header p {
-        margin: 0;
-        color: var(--mu);
-        font-size: 12px;
-    }
-
-    .sp {
+    .mf .btn {
         flex: 1;
-    }
-
-    #burger {
-        display: none;
-    }
-
-    .ib {
-        all: unset;
-        cursor: pointer;
-        position: relative;
-        padding: 8px;
-        border-radius: 8px;
-        color: var(--mu);
-    }
-
-    .ib:hover {
-        background: var(--bg);
-    }
-
-    .badge {
-        position: absolute;
-        top: 2px;
-        right: 2px;
-        background: var(--bad);
-        color: #fff;
-        font-size: 10px;
-        border-radius: 9px;
-        padding: 0 5px;
-    }
-
-    .clock {
-        text-align: right;
-        font-variant-numeric: tabular-nums;
-    }
-
-    .clock b {
-        font-size: 20px;
-        font-weight: 700;
-        color: var(--pri);
-    }
-
-    /* ---- Footer ---- */
-    footer {
-        padding: 16px 24px;
-        border-top: 1px solid var(--bd);
-        color: var(--mu);
-        font-size: 12px;
-        display: flex;
-        gap: 16px;
-        flex-wrap: wrap;
-        background: var(--card);
-    }
-
-    footer a {
-        color: var(--pri);
-        text-decoration: none;
-    }
-
-    /* ---- Toast ---- */
-    .toast {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        background: var(--tx);
-        color: var(--bg);
-        padding: 10px 16px;
-        border-radius: 8px;
-        z-index: 50;
-    }
-
-
-    /* =========================================================
-       04 · COMPONENTES
-       ========================================================= */
-
-    /* ---- Grids ---- */
-    .grid {
-        display: grid;
-        gap: 16px;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        margin-bottom: 20px;
-    }
-
-    .g2 {
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    }
-
-    /* ---- Card ---- */
-    .card {
-        background: var(--card);
-        border: 1px solid var(--bd);
-        border-radius: 16px;
-        padding: 18px;
-        box-shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 10px 24px -14px rgba(30, 58, 138, .18);
-    }
-
-    .card h3 {
-        margin: 0 0 12px;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    /* ---- Stat ---- */
-    .stat {
-        display: flex;
-        gap: 14px;
-        align-items: center;
-    }
-
-    .stat .ic {
-        width: 44px;
-        height: 44px;
-        border-radius: 10px;
-        display: grid;
-        place-items: center;
-        color: #fff;
-    }
-
-    .stat b {
-        font-size: 24px;
-        display: block;
-        line-height: 1.1;
-    }
-
-    .stat span {
-        color: var(--mu);
-        font-size: 12px;
-    }
-
-    /* ---- KPI ---- */
-    .kpi {
-        padding: 16px 18px;
-    }
-
-    .kpi b {
-        font-size: 30px;
-        letter-spacing: -.03em;
-        display: block;
-        margin: 4px 0 6px;
-        line-height: 1.1;
-    }
-
-    .kh {
-        display: flex;
-        justify-content: space-between;
-        color: var(--mu);
-        font-size: 13px;
-    }
-
-    .kh i {
-        display: grid;
-    }
-
-    .kf {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .kf em {
-        font-style: normal;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .up { color: var(--ok); }
-    .dn { color: var(--bad); }
-
-    /* ---- Hero ---- */
-    .hero {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-        flex-wrap: wrap;
-        padding: 24px;
-        border-radius: 16px;
-        margin-bottom: 16px;
-        color: #fff;
-        background: radial-gradient(circle at 90% 0, var(--pri2), transparent 55%), var(--c1);
-    }
-
-    .hero small {
-        opacity: .8;
-        display: block;
-    }
-
-    .hero b {
-        font-size: 44px;
-        letter-spacing: -.03em;
-        margin-right: 12px;
-    }
-
-    .hero .btn.o {
-        color: #fff;
-        border-color: rgba(255, 255, 255, .4);
-    }
-
-    /* ---- Barras y mapa de calor ---- */
-    .bar {
-        height: 8px;
-        background: var(--bd);
-        border-radius: 4px;
-        overflow: hidden;
-        min-width: 80px;
-    }
-
-    .bar i {
-        display: block;
-        height: 100%;
-    }
-
-    .heat {
-        display: grid;
-        grid-template-rows: repeat(5, 1fr);
-        grid-auto-flow: column;
-        grid-auto-columns: 1fr;
-        gap: 4px;
-    }
-
-    .heat i {
-        min-height: 16px;
-        border-radius: 4px;
-    }
-
-    .hb {
-        display: grid;
-        grid-template-columns: 110px 1fr;
-        gap: 10px;
-        align-items: center;
-        padding: 7px 0;
-    }
-
-    /* ---- Tablas ---- */
-    .tw {
-        overflow-x: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 480px;
-    }
-
-    th {
-        text-align: left;
-        color: var(--mu);
-        font-weight: 600;
-        font-size: 12px;
-        padding: 8px 10px;
-        background: var(--bg);
-        border: 0;
-    }
-
-    th:first-child { border-radius: 8px 0 0 8px; }
-    th:last-child  { border-radius: 0 8px 8px 0; }
-
-    td {
-        padding: 10px;
-        border-bottom: 1px solid var(--bd);
-    }
-
-    tr:hover td {
-        background: var(--hov);
-    }
-
-    /* ---- Pills ---- */
-    .pill {
-        padding: 2px 10px;
-        border-radius: 99px;
-        font-size: 12px;
-        font-weight: 500;
-        white-space: nowrap;
-    }
-
-    .ok  { background: var(--okb);  color: #047857; }
-    .bad { background: var(--badb); color: #B91C1C; }
-    .wn  { background: var(--wb);   color: #B45309; }
-
-    @media (prefers-color-scheme: dark) {
-        :root:not([data-theme="light"]) .ok  { color: #6EE7B7; }
-        :root:not([data-theme="light"]) .bad { color: #FCA5A5; }
-        :root:not([data-theme="light"]) .wn  { color: #FCD34D; }
-    }
-
-    /* ---- Botones ---- */
-    .btn {
-        all: unset;
-        box-sizing: border-box;
-        cursor: pointer;
-        background: var(--pri2);
-        color: #fff;
-        padding: 9px 16px;
-        border-radius: 8px;
-        font-weight: 500;
-        display: inline-flex;
-        gap: 8px;
-        align-items: center;
-    }
-
-    .btn:hover {
-        filter: brightness(1.1);
-    }
-
-    .btn:focus-visible {
-        outline: 2px solid var(--ok);
-        outline-offset: 2px;
-    }
-
-    .btn.g { background: var(--ok); }
-
-    .btn.o {
-        background: transparent;
-        color: var(--pri);
-        border: 1px solid var(--bd);
-    }
-
-    .acts {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 20px;
-    }
-
-    .tg {
-        all: unset;
-        cursor: pointer;
-        padding: 4px 12px;
-        border-radius: 99px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    /* ---- Mensajes ---- */
-    .msg {
-        padding: 12px 0;
-        border-bottom: 1px solid var(--bd);
-    }
-
-    .msg:last-child {
-        border: 0;
-    }
-
-    .msg small {
-        color: var(--mu);
-    }
-
-    /* ---- Calendario ---- */
-    .cal {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 8px;
-    }
-
-    .cal div {
-        background: var(--bg);
-        border-radius: 8px;
-        padding: 8px;
-        min-height: 90px;
-        font-size: 12px;
-    }
-
-    .cal b {
-        display: block;
-        margin-bottom: 4px;
-    }
-
-    .cal em {
-        display: block;
-        font-style: normal;
-        background: var(--pri2);
-        color: #fff;
-        border-radius: 4px;
-        padding: 2px 6px;
-        margin-top: 4px;
-    }
-
-    /* ---- Formularios ---- */
-    .form {
-        display: grid;
-        gap: 10px;
-    }
-
-    .form label {
-        font-size: 12px;
-        color: var(--mu);
-    }
-
-    /* ---- Datos clave-valor ---- */
-    .kv {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-        gap: 18px;
-    }
-
-    .f span {
-        display: block;
-        color: var(--mu);
-        font-size: 12px;
-        margin-bottom: 4px;
-    }
-
-    .f b {
-        font-weight: 500;
-        display: block;
-        padding: 9px 0;
-        border-bottom: 1px solid var(--bd);
-        word-break: break-word;
-    }
-
-    .f input {
-        width: 100%;
-    }
-
-
-    /* =========================================================
-       05 · PANTALLAS
-       ========================================================= */
-
-    /* ---- Chips ---- */
-    .chips {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-
-    .chips span {
-        display: inline-flex;
-        gap: 6px;
-        align-items: center;
-        background: var(--bg);
-        padding: 6px 12px;
-        border-radius: 99px;
-        font-weight: 500;
-    }
-
-    .chips svg {
-        width: 16px;
-        height: 16px;
-        color: var(--pri2);
-    }
-
-    .chs {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-
-    .tg2 {
-        all: unset;
-        cursor: pointer;
-        padding: 6px 14px;
-        border: 1px solid var(--bd);
-        border-radius: 99px;
-        font-size: 13px;
-    }
-
-    .tg2.on {
-        background: var(--pri2);
-        color: #fff;
-        border-color: var(--pri2);
-    }
-
-    /* ---- Lista de asistencia ---- */
-    .stu {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        padding: 10px 0;
-        border-bottom: 1px solid var(--bd);
-        flex-wrap: wrap;
-    }
-
-    .stu b {
-        flex: 1;
-        min-width: 120px;
-        font-weight: 500;
-    }
-
-    .seg {
-        display: flex;
-        border: 1px solid var(--bd);
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    .seg button {
-        all: unset;
-        cursor: pointer;
-        padding: 7px 14px;
-        font-size: 13px;
-        color: var(--mu);
-    }
-
-    .seg .on.ok { background: var(--ok);  color: #fff; }
-    .seg .on.no { background: var(--bad); color: #fff; }
-
-    /* ---- Perfil ---- */
-    .pf {
-        padding: 0;
-        overflow: hidden;
-        margin-bottom: 16px;
-    }
-
-    .cover {
-        height: 96px;
-        background: radial-gradient(circle at 80% 0, var(--pri2), transparent 60%), var(--c1);
-    }
-
-    .pfh {
-        display: flex;
-        gap: 16px;
-        align-items: center;
-        padding: 0 20px 20px;
-        margin-top: -36px;
-        flex-wrap: wrap;
-    }
-
-    /* ---- Switches ---- */
-    .sw {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 11px 0;
-        border-bottom: 1px solid var(--bd);
-        cursor: pointer;
-    }
-
-    .sw input {
-        display: none;
-    }
-
-    .sw i {
-        width: 38px;
-        height: 22px;
-        border-radius: 99px;
-        background: var(--bd);
-        position: relative;
-        transition: .2s;
-    }
-
-    .sw i:after {
-        content: '';
-        position: absolute;
-        top: 3px;
-        left: 3px;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        background: #fff;
-        transition: .2s;
-    }
-
-    .sw input:checked + i {
-        background: var(--ok);
-    }
-
-    .sw input:checked + i:after {
-        left: 19px;
-    }
-
-    .sw.off {
-        opacity: .55;
-        cursor: default;
-    }
-
-    .ra {
-        display: flex;
-        gap: 2px;
-    }
-
-    .ra .ib {
-        padding: 6px;
-    }
-
-    /* ---- Modales ---- */
-    .mo {
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 23, 42, .55);
-        display: grid;
-        place-items: center;
-        padding: 16px;
-        z-index: 60;
-    }
-
-    .md {
-        background: var(--card);
-        border-radius: 14px;
-        width: 100%;
-        max-width: 460px;
-        max-height: 90vh;
-        overflow: auto;
-    }
-
-    .mh {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 14px 18px;
-        border-bottom: 1px solid var(--bd);
-    }
-
-    .mh h3 {
-        margin: 0;
-        font-size: 16px;
-    }
-
-    .mb {
-        padding: 18px;
-    }
-
-    .mf {
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-        padding: 0 18px 18px;
-        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .dl {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
+        grid-template-columns: 1fr;
+    }
+}
+/* =========================================================
+   08 · IDENTIDAD INSTITUCIONAL Y RESPONSIVE FINAL
+   Personalización institucional, tablas móviles y móvil
+   ========================================================= */
+
+
+/* =========================================================
+   IDENTIDAD INSTITUCIONAL
+   ========================================================= */
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    font-size: 22px;
+}
+
+.lg {
+    width: 36px;
+    height: 36px;
+
+    display: grid;
+    place-items: center;
+
+    flex: none;
+
+    overflow: hidden;
+
+    background: var(--ac);
+    color: #fff;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.lg img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    background: #fff;
+}
+
+
+/* =========================================================
+   CONFIGURACIÓN / PREVISUALIZACIÓN INSTITUCIONAL
+   ========================================================= */
+
+.ins {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 3fr)
+        minmax(0, 2fr);
+
+    align-items: start;
+    gap: 16px;
+}
+
+.pvw {
+    overflow: hidden;
+
+    border: 1px solid var(--bd);
+    border-radius: 14px;
+}
+
+.pvs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 14px;
+
+    color: #fff;
+}
+
+.pvb {
+    padding: 16px;
+
+    background: var(--bg);
+}
+
+
+/* =========================================================
+   SELECTORES DE COLOR / ARCHIVOS
+   ========================================================= */
+
+.cp {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cp input[type="color"] {
+    width: 44px;
+    height: 38px;
+
+    flex: none;
+
+    padding: 2px;
+}
+
+.cp input[type="text"],
+.cp input[type="file"] {
+    flex: 1;
+    min-width: 0;
+}
+
+
+/* =========================================================
+   RESPONSIVE · PREVISUALIZACIÓN
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .ins {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* =========================================================
+   TABLET · 861px — 1100px
+   ========================================================= */
+
+@media (min-width: 861px) and (max-width: 1100px) {
+
+    .logo {
+        justify-content: center;
+    }
+}
+
+
+/* =========================================================
+   TABLAS · MÓVIL HASTA 600px
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    table {
+        min-width: 0;
     }
 
-    .dl small {
-        color: var(--mu);
+    tr:first-child {
+        display: none;
+    }
+
+    tr {
         display: block;
+
+        padding: 10px 0;
+
+        border-bottom: 1px solid var(--bd);
     }
 
-    .mrow {
-        display: grid;
-        grid-template-columns: 70px 1fr;
-        gap: 8px;
+    td {
+        display: flex;
         align-items: center;
-        margin-bottom: 10px;
+        justify-content: space-between;
+        gap: 12px;
+
+        padding: 4px 2px;
+
+        border: 0;
     }
 
-    .mrow label {
+    td:before {
+        content: attr(data-l);
+
         color: var(--mu);
         font-size: 12px;
     }
 
-    .mrow input,
-    .mrow select,
-    textarea {
-        width: 100%;
+    tr:hover td {
+        background: none;
+    }
+}
+
+
+/* =========================================================
+   MÓVIL · HASTA 860px
+   Sidebar, header y calendario
+   ========================================================= */
+
+@media (max-width: 860px) {
+
+    #side {
+        transform: translateX(-100%);
     }
 
-    /* ---- Correo ---- */
-    .em {
-        border: 1px solid var(--bd);
-        border-radius: 10px;
+    #side.open {
+        transform: none;
+    }
+
+    #main {
+        margin-left: 0;
+    }
+
+    #burger {
+        display: block;
+    }
+
+    main {
         padding: 16px;
-        background: var(--bg);
     }
 
-    .em h4 {
-        margin: 8px 0;
-        font-size: 16px;
+    header {
+        padding: 12px 16px;
     }
 
-    .em p {
-        white-space: pre-wrap;
-        word-break: break-word;
-        margin: 0 0 12px;
+    .cal {
+        grid-template-columns: repeat(2, 1fr);
     }
+}
+/* =========================================================
+   09 · AUTENTICACIÓN
+   Pantallas de acceso (login, recuperación, cambio de contraseña)
+   ========================================================= */
 
-    .eh {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        margin-bottom: 10px;
-    }
+/* Mientras no hay sesión solo se ve el acceso */
+body.guest #side, body.guest #main { display: none; }
+#auth { display: none; }
+body.guest #auth { display: block; }
 
-    .dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--pri2);
-        flex: none;
-    }
+.au-bg {
+    position: fixed; inset: 0; overflow: hidden; z-index: 0;
+    background:
+        radial-gradient(60% 50% at 85% 0%, rgba(59, 91, 199, .55), transparent 60%),
+        radial-gradient(50% 45% at 0% 100%, color-mix(in srgb, var(--ac) 30%, transparent), transparent 60%),
+        linear-gradient(165deg, #0B1B54, var(--c1));
+}
+.au-bg::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, .06) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .06) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(70% 70% at 50% 40%, #000 30%, transparent 100%);
+}
+.au-tile {
+    position: absolute; display: grid; gap: 2px; padding: 14px 18px; min-width: 190px;
+    color: #fff; border: 1px solid rgba(255, 255, 255, .18); border-radius: 14px;
+    background: rgba(255, 255, 255, .08); backdrop-filter: blur(6px);
+}
+.au-tile small { opacity: .75; font-size: 12px; }
+.au-tile b { font-size: 24px; letter-spacing: -.02em; }
+.au-tile em { font-style: normal; font-size: 12px; color: #6EE7B7; }
+.au-tile.t1 { left: 6vw; top: 18vh; }
+.au-tile.t2 { right: 7vw; top: 30vh; }
+.au-tile.t3 { left: 11vw; bottom: 14vh; }
 
-    .row {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        cursor: pointer;
-    }
+.au-wrap {
+    position: relative; z-index: 1; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+    padding: calc(24px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px));
+}
+.au-brand { display: flex; align-items: center; gap: 10px; color: #fff; font-size: 26px; letter-spacing: .5px; }
+.au-brand i { font-style: normal; color: #6EE7B7; }
+.au-mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px; background: var(--ac); font-weight: 800; }
 
+.au-card {
+    width: 100%; max-width: 440px; padding: 32px;
+    background: var(--card); color: var(--tx);
+    border: 1px solid var(--bd); border-radius: 20px;
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .55);
+}
+.au-ic { width: 48px; height: 48px; display: grid; place-items: center; margin-bottom: 14px; border-radius: 14px; background: color-mix(in srgb, var(--pri2) 14%, transparent); color: var(--pri2); }
+.au-card h1 { margin: 0 0 4px; font-size: 24px; letter-spacing: -.02em; }
+.au-sub { margin: 0 0 18px; color: var(--mu); }
+.au-card form { display: grid; gap: 14px; }
 
-    /* =========================================================
-       06 · IDENTIDAD INSTITUCIONAL
-       ========================================================= */
-    .lg {
-        width: 36px;
-        height: 36px;
-        border-radius: 10px;
-        background: var(--ac);
-        color: #fff;
-        display: grid;
-        place-items: center;
-        font-size: 13px;
-        font-weight: 700;
-        overflow: hidden;
-        flex: none;
-    }
+.au-f { display: grid; gap: 6px; }
+.au-f label { font-size: 13px; font-weight: 600; }
+.au-in { display: flex; align-items: center; gap: 8px; padding: 0 12px; background: var(--bg); border: 1px solid var(--bd); border-radius: 10px; transition: .15s; }
+.au-in svg { color: var(--mu); }
+.au-in:focus-within { border-color: var(--pri2); box-shadow: 0 0 0 3px color-mix(in srgb, var(--pri2) 25%, transparent); }
+.au-in.bad { border-color: var(--bad); box-shadow: 0 0 0 3px color-mix(in srgb, var(--bad) 18%, transparent); }
+.au-in input { flex: 1; min-width: 0; padding: 12px 0; background: transparent; border: 0; border-radius: 0; outline: 0; font-size: 15px; }
+.au-in input:disabled { opacity: .55; }
+.au-err { color: var(--bad); font-size: 12px; }
+.au-eye { all: unset; padding: 6px; border-radius: 8px; color: var(--mu); cursor: pointer; }
+.au-eye:hover { background: var(--card); }
+.au-eye:focus-visible, .au-link:focus-visible, .au-btn:focus-visible, .au-demo button:focus-visible { outline: 2px solid var(--pri2); outline-offset: 2px; }
 
-    .lg img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        background: #fff;
-    }
+.au-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; }
+.au-chk { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.au-chk input { width: 16px; height: 16px; padding: 0; accent-color: var(--pri2); }
+.au-link { all: unset; color: var(--pri2); font-weight: 600; font-size: 13px; cursor: pointer; }
+.au-link:hover { text-decoration: underline; }
+.au-link.c { display: block; margin: 16px auto 0; text-align: center; }
+.au-caps { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--wb); color: #B45309; border-radius: 8px; font-size: 12px; }
+.au-caps[hidden], .au-err[hidden], .au-alert[hidden] { display: none; }
 
-    .ins {
-        display: grid;
-        gap: 16px;
-        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-        align-items: start;
-    }
+.au-btn {
+    all: unset; box-sizing: border-box; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 13px 16px; background: var(--pri2); color: #fff; border-radius: 10px; font-weight: 600; font-size: 15px; cursor: pointer;
+}
+.au-btn:hover { filter: brightness(1.08); }
+.au-btn[disabled] { opacity: .6; cursor: not-allowed; filter: none; }
+.au-btn.o { background: transparent; color: var(--pri); border: 1px solid var(--bd); margin-bottom: 10px; }
+.au-card > .au-btn { margin-top: 4px; }
+.au-spin { width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, .4); border-top-color: #fff; border-radius: 50%; animation: au-sp .7s linear infinite; }
+@keyframes au-sp { to { transform: rotate(360deg); } }
 
-    .pvw {
-        border-radius: 14px;
-        overflow: hidden;
-        border: 1px solid var(--bd);
-    }
+.au-alert { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 14px; padding: 11px 13px; border-radius: 10px; font-size: 13px; }
+.au-alert svg { margin-top: 1px; }
+.au-alert.err { background: var(--badb); color: #B91C1C; }
+.au-alert.info { background: color-mix(in srgb, var(--pri2) 12%, transparent); color: var(--pri); }
+.au-alert.ok { background: var(--okb); color: #047857; }
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .au-alert.err, :root:not([data-theme="light"]) .au-caps { color: #FCA5A5; }
+    :root:not([data-theme="light"]) .au-alert.ok { color: #6EE7B7; }
+}
 
-    .pvs {
-        padding: 14px;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
+.au-meter { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-top: 2px; }
+.au-meter i { height: 5px; border-radius: 3px; background: var(--bd); }
+.au-meter.s1 i:nth-child(-n+1) { background: var(--bad); }
+.au-meter.s2 i:nth-child(-n+2) { background: var(--warn); }
+.au-meter.s3 i:nth-child(-n+3) { background: #84CC16; }
+.au-meter.s4 i { background: var(--ok); }
+.au-mlabel { color: var(--mu); font-size: 12px; }
+.au-rules { margin: 6px 0 0; padding: 0; list-style: none; display: grid; gap: 3px; font-size: 12px; color: var(--mu); }
+.au-rules li::before { content: "○ "; }
+.au-rules li.ok { color: var(--ok); }
+.au-rules li.ok::before { content: "✓ "; }
+.au-pwm { margin-top: -4px; }
 
-    .pvb {
-        padding: 16px;
-        background: var(--bg);
-    }
+.au-demo { margin-top: 18px; font-size: 12px; color: var(--mu); }
+.au-demo summary { cursor: pointer; font-weight: 600; }
+.au-demo p { margin: 8px 0; }
+.au-demo div { display: flex; flex-wrap: wrap; gap: 6px; }
+.au-demo button { all: unset; cursor: pointer; padding: 5px 12px; background: var(--bg); color: var(--tx); border: 1px solid var(--bd); border-radius: 99px; }
+.au-demo button:hover { border-color: var(--pri2); }
+.au-foot { margin: 0; color: rgba(255, 255, 255, .75); font-size: 12px; text-align: center; }
+.au-foot a { color: #fff; }
+.au-mform { display: grid; gap: 12px; }
 
-    .cp {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-    }
+/* Acciones de sesión en el sidebar */
+.au-acts { display: flex; gap: 2px; margin-left: auto; }
+.au-acts .ib { color: #C7D4FF; }
+.au-acts .ib:hover { background: rgba(255, 255, 255, .12); color: #fff; }
 
-    .cp input[type=color] {
-        width: 44px;
-        height: 38px;
-        padding: 2px;
-        flex: none;
-    }
-
-    .cp input[type=text],
-    .cp input[type=file] {
-        flex: 1;
-        min-width: 0;
-    }
-
-
-    /* =========================================================
-       07 · RESPONSIVE
-       ========================================================= */
-
-    /* ---- Tablet (861px – 1100px): sidebar compacto ---- */
-    @media (min-width: 861px) and (max-width: 1100px) {
-        #side {
-            width: 68px;
-            padding-left: 8px;
-            padding-right: 8px;
-        }
-
-        .lb,
-        .sub,
-        .me > div:last-child {
-            display: none;
-        }
-
-        .logo {
-            font-size: 11px;
-            padding: 0;
-            text-align: center;
-            justify-content: center;
-        }
-
-        #nav button {
-            justify-content: center;
-            padding: 12px 0;
-        }
-
-        #nav .gh {
-            display: none;
-        }
-
-        #nav .ch {
-            display: block !important;
-            margin: 0;
-            padding: 0;
-            border: 0;
-        }
-
-        #nav .ni {
-            justify-content: center;
-            padding: 5px 0;
-        }
-
-        #nav .ch .ti {
-            width: 32px;
-            height: 32px;
-        }
-
-        #nav .ch .ti svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        #main {
-            margin-left: 68px;
-        }
-
-        .me {
-            justify-content: center;
-        }
-    }
-
-    /* ---- Hasta 900px ---- */
-    @media (max-width: 900px) {
-        .ins {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    /* ---- Móvil / tablet pequeña (≤ 860px): sidebar off-canvas ---- */
-    @media (max-width: 860px) {
-        #side {
-            transform: translateX(-100%);
-        }
-
-        #side.open {
-            transform: none;
-        }
-
-        #main {
-            margin-left: 0;
-        }
-
-        #burger {
-            display: block;
-        }
-
-        main {
-            padding: 16px;
-        }
-
-        header {
-            padding: 12px 16px;
-        }
-
-        .cal {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    /* ---- Móvil (≤ 600px): tablas apiladas ---- */
-    @media (max-width: 600px) {
-        table {
-            min-width: 0;
-        }
-
-        tr:first-child {
-            display: none;
-        }
-
-        tr {
-            display: block;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--bd);
-        }
-
-        td {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            border: 0;
-            padding: 4px 2px;
-        }
-
-        td:before {
-            content: attr(data-l);
-            color: var(--mu);
-            font-size: 12px;
-        }
-
-        tr:hover td {
-            background: none;
-        }
-    }
-
-    /* ---- Móvil pequeño (≤ 520px) ---- */
-    @media (max-width: 520px) {
-        .mrow {
-            grid-template-columns: 1fr;
-        }
-
-        .mf .btn {
-            flex: 1;
-            justify-content: center;
-        }
-
-        .dl {
-            grid-template-columns: 1fr;
-        }
-    }
+@media (max-width: 1100px) { .au-tile { display: none; } }
+@media (max-width: 520px) {
+    .au-card { padding: 24px 20px; border-radius: 16px; }
+    .au-wrap { justify-content: flex-start; padding-top: calc(28px + env(safe-area-inset-top, 0px)); }
+}
+@media (min-width: 861px) and (max-width: 1100px) { .me { flex-direction: column; } .au-acts { margin-left: 0; } }
+@media (prefers-reduced-motion: reduce) { .au-spin { animation-duration: 2s; } .au-in { transition: none; } }
 </style>
 </head>
 
-<body>
-<aside id="side"><div class="logo">ATRI<b>UM</b></div><div class="sub">Seguimiento de asistencia</div><nav id="nav"></nav>
-<div class="me"><div class="av" id="mav"></div><div><div id="mnm" style="font-weight:600"></div><div id="mrl" style="opacity:.7;font-size:12px"></div></div></div></aside>
-<div id="main"><header>
-<button class="ib" id="burger" aria-label="Menú"></button>
-<div><h1 id="hi"></h1><p id="per">Periodo 2026-II · Semestre en curso</p></div><div class="sp"></div>
-<label style="font-size:12px;color:var(--mu)">Institución <select id="inst"></select></label>
-<label style="font-size:12px;color:var(--mu)">Vista <select id="role"><option value="admin">Administrador general</option><option value="iadm">Admin institucional</option><option value="prof">Profesor</option><option value="est">Estudiante</option></select></label>
-<div class="clock"><b id="ck"></b><p id="dt"></p></div>
-<button class="ib" id="bell" aria-label="Notificaciones"></button></header>
-<main id="view"></main>
-<footer><span>© 2026 ATRIUM</span><span>Versión 1.0.0</span><span class="sp"></span><a href="#">Centro de ayuda</a><a href="#">Soporte</a><a href="#">Privacidad</a></footer></div>
+<body class="guest">
+
+<!-- ========== ACCESO (login) ========== -->
+<div id="auth"></div>
+
+<!-- ========== SIDEBAR ========== -->
+<aside id="side">
+    <div class="logo">ATR<b>IUM</b></div>
+    <div class="sub">Seguimiento de asistencia</div>
+
+    <nav id="nav"></nav>
+
+    <div class="me">
+        <div class="av" id="mav"></div>
+        <div>
+            <div id="mnm" style="font-weight:600"></div>
+            <div id="mrl" style="opacity:.7;font-size:12px"></div>
+        </div>
+    </div>
+</aside>
+
+<!-- ========== CONTENEDOR PRINCIPAL ========== -->
+<div id="main">
+
+    <!-- Header -->
+    <header>
+        <button class="ib" id="burger" aria-label="Menú"></button>
+
+        <div>
+            <h1 id="hi"></h1>
+            <p id="per">Periodo 2027-II · Semestre en curso</p>
+        </div>
+
+        <div class="sp"></div>
+
+        <label hidden style="font-size:12px;color:var(--mu)">Institución
+            <select id="inst"></select>
+        </label>
+
+        <label hidden style="font-size:12px;color:var(--mu)">Vista
+            <select id="role">
+                <option value="admin">Administrador general</option>
+                <option value="iadm">Admin institucional</option>
+                <option value="prof">Profesor</option>
+                <option value="est">Estudiante</option>
+            </select>
+        </label>
+
+        <div class="clock">
+            <b id="ck"></b>
+            <p id="dt"></p>
+        </div>
+
+        <button class="ib" id="bell" aria-label="Notificaciones"></button>
+    </header>
+
+    <!-- Contenido -->
+    <main id="view"></main>
+
+    <!-- Footer -->
+    <footer>
+        <span>© 2026 ATRIUM</span>
+        <span>Versión 1.0.0</span>
+        <span class="sp"></span>
+        <a href="#">Centro de ayuda</a>
+        <a href="#">Soporte</a>
+        <a href="#">Privacidad</a>
+    </footer>
+
+</div>
+
 <script>
 (() => {
   // js/core/state.js
@@ -1475,8 +2298,8 @@
     $("mrl").textContent = u.label;
     $("hi").textContent = "Hola, " + u.name.split(" ").slice(0, state.role == "prof" ? 2 : 1).join(" ") + " 👋";
     $("bc").textContent = NOTIFICATIONS[state.role].length;
-    const view = views[state.role][state.sec] || fallbackView;
-    $("view").innerHTML = `<h2 style="margin:0 0 16px;font-size:20px">${current[1]}</h2>` + view();
+    const view2 = views[state.role][state.sec] || fallbackView;
+    $("view").innerHTML = `<h2 style="margin:0 0 16px;font-size:20px">${current[1]}</h2>` + view2();
   }
 
   // js/data/institutions.js
@@ -1629,6 +2452,460 @@
   function closeModal() {
     const m = document.getElementById("mo");
     if (m) m.remove();
+  }
+
+  // js/auth/config.js
+  var AUTH_MODE = "demo";
+  var MAX_TRIES = 5;
+  var LOCK_MIN = 15;
+  var IDLE_MIN = 30;
+  var WARN_SEC = 60;
+  var REMEMBER_DAYS = 7;
+  var TOKEN_MIN = 15;
+  var RESEND_SEC = 60;
+  var PASS_MIN = 10;
+  var DEMO_PASS = "Atrium2026!";
+  var TEMP_PASS = "Temporal2026!";
+  var DEMO_USERS = [
+    { id: "lmendez", email: "laura.mendez@atrium.edu", role: "admin", inst: null, name: "Laura Méndez", label: "Administrador general" },
+    { id: "msolis", email: "m.solis@atrium.edu", role: "iadm", inst: "uni", name: "Marta Solís", label: "Admin institucional" },
+    { id: "plara", email: "p.lara@santalucia.edu", role: "iadm", inst: "col", name: "Pedro Lara", label: "Admin institucional", must: true },
+    { id: "crivas", email: "c.rivas@atrium.edu", role: "prof", inst: "uni", name: "Dr. Carlos Rivas", label: "Profesor" },
+    { id: "atorres", email: "ana.torres@atrium.edu", role: "est", inst: "uni", name: "Ana Torres", label: "Estudiante" }
+  ];
+
+  // js/auth/password.js
+  function evaluate(pw, ctx2 = "") {
+    const local = (ctx2.split("@")[0] || "").toLowerCase();
+    const rules = [
+      [`Mínimo ${PASS_MIN} caracteres`, pw.length >= PASS_MIN],
+      ["Una mayúscula y una minúscula", /[a-z]/.test(pw) && /[A-Z]/.test(pw)],
+      ["Un número", /\d/.test(pw)],
+      ["Un símbolo (!, ?, #, …)", /[^A-Za-z0-9]/.test(pw)],
+      ["No contiene tu usuario o correo", !local || local.length < 3 || !pw.toLowerCase().includes(local)]
+    ].map(([label, ok]) => ({ label, ok }));
+    const passed = rules.filter((r) => r.ok).length;
+    return { rules, ok: passed === rules.length, score: pw ? Math.max(1, Math.min(4, passed - 1)) : 0 };
+  }
+  var LABELS = ["", "Débil", "Aceptable", "Buena", "Fuerte"];
+  var meterHtml = (r) => `<div class="au-meter s${r.score}" aria-hidden="true"><i></i><i></i><i></i><i></i></div><small class="au-mlabel">${LABELS[r.score] || "Escribe una contraseña"}</small><ul class="au-rules">${r.rules.map((x) => `<li class="${x.ok ? "ok" : ""}">${x.label}</li>`).join("")}</ul>`;
+
+  // js/auth/session.js
+  var KEY = "atrium_session";
+  var OUT = "atrium_logout";
+  var session = { user: null };
+  function save(email, remember) {
+    clear();
+    const exp = Date.now() + (remember ? REMEMBER_DAYS * 864e5 : IDLE_MIN * 6e4 * 4);
+    try {
+      (remember ? localStorage : sessionStorage).setItem(KEY, JSON.stringify({ email, exp }));
+    } catch (e) {
+    }
+  }
+  function load() {
+    try {
+      const raw = sessionStorage.getItem(KEY) || localStorage.getItem(KEY);
+      const s = raw && JSON.parse(raw);
+      if (s && s.exp > Date.now()) return s.email;
+    } catch (e) {
+    }
+    clear();
+    return null;
+  }
+  function clear() {
+    try {
+      sessionStorage.removeItem(KEY);
+      localStorage.removeItem(KEY);
+    } catch (e) {
+    }
+  }
+  var broadcastLogout = () => {
+    try {
+      localStorage.setItem(OUT, String(Date.now()));
+    } catch (e) {
+    }
+  };
+  var onRemoteLogout = (fn) => addEventListener("storage", (e) => e.key === OUT && fn());
+  var EVENTS = ["pointerdown", "keydown", "scroll", "touchstart"];
+  var warnT;
+  var outT;
+  var handler;
+  function startIdle(onWarn, onTimeout) {
+    stopIdle();
+    const reset2 = () => {
+      clearTimeout(warnT);
+      clearTimeout(outT);
+      warnT = setTimeout(onWarn, (IDLE_MIN * 60 - WARN_SEC) * 1e3);
+      outT = setTimeout(onTimeout, IDLE_MIN * 6e4);
+    };
+    handler = reset2;
+    EVENTS.forEach((e) => addEventListener(e, handler, { passive: true }));
+    reset2();
+  }
+  function stopIdle() {
+    clearTimeout(warnT);
+    clearTimeout(outT);
+    if (handler) EVENTS.forEach((e) => removeEventListener(e, handler));
+    handler = null;
+  }
+
+  // js/auth/service.js
+  var err = (code, extra) => Object.assign(new Error(code), { code }, extra);
+  var wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  var api = AUTH_MODE === "api";
+  var CODES = { 401: "INVALID", 403: "INST_INACTIVE", 423: "LOCKED", 429: "LOCKED" };
+  async function http(path, body, method = "POST") {
+    const r = await fetch("/api/v1/auth" + path, {
+      method,
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
+      body: body ? JSON.stringify(body) : void 0
+    });
+    const d = r.status === 204 ? null : await r.json().catch(() => null);
+    if (!r.ok) throw err(d && d.code || CODES[r.status] || "ERROR", d || {});
+    return d;
+  }
+  var ROLES = { SUPER_ADMIN: "admin", INST_ADMIN: "iadm", TEACHER: "prof", STUDENT: "est" };
+  var fromApi = (d) => ({ user: { id: d.usuario || d.correo, email: d.correo, name: d.nombre, role: ROLES[d.rol], inst: d.institucionId == null ? null : String(d.institucionId), label: d.etiquetaRol || d.rol }, mustChange: !!d.debeCambiarPassword });
+  var PW = Object.fromEntries(DEMO_USERS.map((u) => [u.email, { pass: u.must ? TEMP_PASS : DEMO_PASS, must: !!u.must }]));
+  var TOKENS = {};
+  var TK = "atrium_intentos";
+  var tries = () => {
+    try {
+      return JSON.parse(localStorage.getItem(TK) || "{}");
+    } catch (e) {
+      return {};
+    }
+  };
+  var saveTries = (t) => {
+    try {
+      localStorage.setItem(TK, JSON.stringify(t));
+    } catch (e) {
+    }
+  };
+  var find = (id) => DEMO_USERS.find((u) => u.email === id || u.id === id);
+  var instBlocked = (u) => !!(u.inst && INST[u.inst] && !isActive(INST[u.inst]));
+  async function login(id, pass, remember) {
+    if (api) return fromApi(await http("/login", { usuario: id, password: pass, recordarme: remember }));
+    await wait(500);
+    const typed = id.trim().toLowerCase(), u = find(typed), key = u ? u.email : typed, T = tries();
+    let t = T[key] || { n: 0, until: 0 };
+    if (t.until && t.until <= Date.now()) t = { n: 0, until: 0 };
+    if (t.until > Date.now()) throw err("LOCKED", { until: t.until });
+    if (!u || PW[u.email].pass !== pass) {
+      t.n++;
+      if (t.n >= MAX_TRIES) {
+        T[key] = { n: 0, until: Date.now() + LOCK_MIN * 6e4 };
+        saveTries(T);
+        throw err("LOCKED", { until: T[key].until });
+      }
+      T[key] = t;
+      saveTries(T);
+      throw err("INVALID", { left: MAX_TRIES - t.n });
+    }
+    if (instBlocked(u)) throw err("INST_INACTIVE");
+    delete T[key];
+    saveTries(T);
+    save(u.email, remember);
+    return { user: u, mustChange: PW[u.email].must };
+  }
+  async function me() {
+    if (api) return fromApi(await http("/me", null, "GET"));
+    const email = load(), u = email && find(email);
+    return u ? { user: u, mustChange: PW[u.email].must } : null;
+  }
+  async function logout() {
+    if (api) await http("/logout").catch(() => {
+    });
+    clear();
+  }
+  async function forgot(id) {
+    if (api) {
+      await http("/forgot-password", { usuario: id }).catch(() => {
+      });
+      return {};
+    }
+    await wait(500);
+    const u = find(id.trim().toLowerCase()), token = Array.from(crypto.getRandomValues(new Uint8Array(12)), (b) => b.toString(16).padStart(2, "0")).join("");
+    if (u) TOKENS[token] = { email: u.email, exp: Date.now() + TOKEN_MIN * 6e4 };
+    return { demoToken: token };
+  }
+  async function reset(token, pass) {
+    if (api) return http("/reset-password", { token, password: pass });
+    await wait(400);
+    const t = TOKENS[token];
+    if (!t) throw err("TOKEN_INVALID");
+    if (t.exp < Date.now()) throw err("TOKEN_EXPIRED");
+    if (!evaluate(pass, t.email).ok) throw err("WEAK");
+    PW[t.email] = { pass, must: false };
+    delete TOKENS[token];
+    const T = tries();
+    delete T[t.email];
+    saveTries(T);
+  }
+  async function change(email, current, pass) {
+    if (api) return http("/change-password", { actual: current, nueva: pass });
+    await wait(400);
+    const rec = PW[email];
+    if (!rec || current !== null && rec.pass !== current) throw err("INVALID");
+    if (pass === rec.pass) throw err("SAME");
+    if (!evaluate(pass, email).ok) throw err("WEAK");
+    PW[email] = { pass, must: false };
+  }
+
+  // js/auth/permissions.js
+  var can = (role, sec) => !!MENU[role] && MENU[role].some((m) => m[0] === sec);
+  var firstSection = (role) => MENU[role][0][0];
+
+  // js/auth/ui.js
+  var esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  var P = { mail: "M3 5h18v14H3zM3 7l9 6 9-6", lock: "M5 11h14v10H5zM8 11V7a4 4 0 0 1 8 0v4", key: "M21 2l-2 2m-7.6 7.6a5.5 5.5 0 1 1-7.8 7.8 5.5 5.5 0 0 1 7.8-7.8zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4", eyeoff: "M3 3l18 18M10.6 10.6a3 3 0 0 0 4.2 4.2M9.9 5.1A10.6 10.6 0 0 1 12 5c7 0 11 7 11 7a18 18 0 0 1-3.2 4.2M6.1 6.1A18 18 0 0 0 1 12s4 7 11 7a10.6 10.6 0 0 0 4-.8", logout: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9", alert: "M12 9v4m0 4h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z", shield: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z" };
+  var ai = (n) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="${P[n]}"/></svg>`;
+  var onEnter = () => {
+  };
+  var ctx = {};
+  var timer;
+  var card2 = () => $("au-card");
+  var field = (id, label, { type = "text", ac = "off", ph = "", icon = "", eye = false, extra = "" } = {}) => `<div class="au-f"><label for="${id}">${label}</label><div class="au-in">${icon ? ai(icon) : ""}<input id="${id}" type="${type}" autocomplete="${ac}" placeholder="${ph}" aria-describedby="${id}-e" ${extra}>${eye ? `<button type="button" class="au-eye" data-act="eye" data-for="${id}" aria-label="Mostrar contraseña" aria-pressed="false">${ic("eye")}</button>` : ""}</div><small class="au-err" id="${id}-e" role="alert" hidden></small></div>`;
+  var alertBox = (type, msg) => msg ? `<div class="au-alert ${type}" role="${type == "err" ? "alert" : "status"}">${ai(type == "err" ? "alert" : "shield")}<span>${msg}</span></div>` : "";
+  var setErr = (id, msg) => {
+    const i = $(id), e = $(id + "-e");
+    if (!i || !e) return;
+    e.textContent = msg || "";
+    e.hidden = !msg;
+    i.setAttribute("aria-invalid", msg ? "true" : "false");
+    i.closest(".au-in").classList.toggle("bad", !!msg);
+  };
+  var busy = (b, label) => {
+    const x = $("au-submit");
+    if (x) {
+      x.disabled = b;
+      x.innerHTML = b ? '<span class="au-spin"></span>Procesando…' : label;
+    }
+  };
+  var head = (title, sub, icon = "lock") => `<div class="au-ic">${ai(icon)}</div><h1>${title}</h1><p class="au-sub">${sub}</p>`;
+  var pwBlock = (idNew, idRep, meterId) => field(idNew, "Nueva contraseña", { type: "password", ac: "new-password", eye: true, extra: `data-pw="${meterId}"` }) + `<div id="${meterId}" class="au-pwm">${meterHtml(evaluate(""))}</div>` + field(idRep, "Confirmar contraseña", { type: "password", ac: "new-password", eye: true });
+  var MSG = {
+    INST_INACTIVE: "Tu institución está desactivada. Contacta al administrador de la plataforma.",
+    TOKEN_INVALID: "El enlace no es válido o ya fue usado.",
+    TOKEN_EXPIRED: "El enlace expiró. Solicita uno nuevo.",
+    WEAK: "La contraseña no cumple los requisitos.",
+    SAME: "La nueva contraseña debe ser distinta de la actual.",
+    ERROR: "No pudimos completar la acción. Intenta de nuevo."
+  };
+  function view(name, o = {}) {
+    clearInterval(timer);
+    ctx = { ...ctx, view: name, ...o };
+    const html = { login: vLogin, forgot: vForgot, sent: vSent, reset: vReset, force: vForce }[name](o);
+    card2().innerHTML = html;
+    card2().dataset.view = name;
+    const f = card2().querySelector("input");
+    if (f && !o.noFocus) f.focus();
+    if (o.until) countdown(o.until);
+  }
+  function vLogin(o) {
+    const locked = o.until && o.until > Date.now();
+    return head("Inicia sesión", "Accede con tu correo institucional o tu usuario.") + (locked ? alertBox("err", `Demasiados intentos. Acceso bloqueado por seguridad. Podrás intentar de nuevo en <b id="au-cd"></b>.`) : alertBox(o.type || "info", o.msg)) + `<form id="au-login" novalidate>${field("au-u", "Correo o usuario", { ac: "username", ph: "nombre@institucion.edu", icon: "mail", extra: `value="${esc(o.id || "")}" autocapitalize="none" spellcheck="false" ${locked ? "disabled" : ""}` })}` + field("au-p", "Contraseña", { type: "password", ac: "current-password", icon: "lock", eye: true, extra: locked ? "disabled" : "" }) + `<div class="au-caps" id="au-caps" hidden>${ai("alert")}Bloq Mayús está activado</div><div class="au-row"><label class="au-chk"><input type="checkbox" id="au-r" ${locked ? "disabled" : ""}> Recordarme</label><button type="button" class="au-link" data-act="forgot">¿Olvidaste tu contraseña?</button></div><button class="au-btn" id="au-submit" type="submit" ${locked ? "disabled" : ""}>Iniciar sesión</button></form>` + (AUTH_MODE == "demo" ? `<details class="au-demo"><summary>Accesos de demostración</summary><p>Contraseña: <b>${DEMO_PASS}</b></p><div>${DEMO_USERS.map((u) => `<button type="button" data-act="demo" data-u="${u.id}">${u.label}${u.inst && u.inst != "uni" ? " (CSL)" : ""}</button>`).join("")}</div></details>` : "");
+  }
+  var vForgot = (o) => head("Recupera tu acceso", "Ingresa tu correo o usuario y te enviaremos un enlace para crear una nueva contraseña.", "mail") + `<form id="au-forgot" novalidate>${field("au-u", "Correo o usuario", { ac: "username", icon: "mail", extra: `value="${esc(o.id || "")}"` })}<button class="au-btn" id="au-submit" type="submit">Enviar enlace</button></form><button class="au-link c" data-act="back">← Volver a iniciar sesión</button>`;
+  var vSent = (o) => head("Revisa tu correo", `Si la cuenta existe, te enviamos un enlace que vence en ${TOKEN_MIN} minutos. Revisa también tu carpeta de spam.`, "mail") + `<button class="au-btn o" data-act="resend" id="au-resend" disabled>Reenviar enlace (<span id="au-rs">${RESEND_SEC}</span>s)</button>` + (o.demoToken ? `<button class="au-btn" data-act="demoreset" data-t="${o.demoToken}">Abrir enlace de demostración</button>` : "") + `<button class="au-link c" data-act="back">← Volver a iniciar sesión</button>`;
+  var vReset = (o) => head("Crea una nueva contraseña", "Elige una contraseña segura que no uses en otros sitios.", "key") + alertBox("err", o.msg) + `<form id="au-reset" novalidate>${pwBlock("au-n", "au-c", "au-m")}<button class="au-btn" id="au-submit" type="submit">Guardar contraseña</button></form><button class="au-link c" data-act="forgot">Solicitar un nuevo enlace</button>`;
+  var vForce = (o) => head("Cambia tu contraseña", "Por seguridad debes reemplazar la contraseña temporal antes de continuar.", "key") + alertBox("err", o.msg) + `<form id="au-force" novalidate>${pwBlock("au-n", "au-c", "au-m")}<button class="au-btn" id="au-submit" type="submit">Guardar y continuar</button></form><button class="au-link c" data-act="cancel">Cancelar y salir</button>`;
+  function countdown(until) {
+    const tick2 = () => {
+      const s = Math.max(0, Math.ceil((until - Date.now()) / 1e3)), el = $("au-cd");
+      if (el) el.textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+      if (!s) view("login", { type: "info", msg: "Ya puedes intentar de nuevo." });
+    };
+    tick2();
+    timer = setInterval(tick2, 1e3);
+  }
+  function resendTimer() {
+    let s = RESEND_SEC;
+    timer = setInterval(() => {
+      s--;
+      const b = $("au-resend"), t = $("au-rs");
+      if (t) t.textContent = s;
+      if (s <= 0) {
+        clearInterval(timer);
+        if (b) {
+          b.disabled = false;
+          b.textContent = "Reenviar enlace";
+        }
+      }
+    }, 1e3);
+  }
+  async function submitLogin() {
+    const id = $("au-u").value.trim(), pw = $("au-p").value;
+    setErr("au-u", id ? "" : "Ingresa tu correo o usuario.");
+    setErr("au-p", pw ? "" : "Ingresa tu contraseña.");
+    if (!id || !pw) return (id ? $("au-p") : $("au-u")).focus();
+    busy(true);
+    try {
+      const r = await login(id, pw, $("au-r").checked);
+      r.mustChange ? (ctx.pending = r.user, view("force")) : enter(r.user);
+    } catch (e) {
+      if (e.code == "LOCKED") return view("login", { id, until: e.until || Date.now() + LOCK_MIN * 6e4 });
+      const msg = e.code == "INVALID" ? "Correo/usuario o contraseña incorrectos." + (e.left != null && e.left <= 2 ? ` Te quedan ${e.left} intento${e.left == 1 ? "" : "s"} antes de un bloqueo de ${LOCK_MIN} minutos.` : "") : MSG[e.code] || MSG.ERROR;
+      view("login", { id, type: "err", msg, noFocus: true });
+      $("au-p").focus();
+    }
+  }
+  async function submitForgot() {
+    const id = $("au-u").value.trim();
+    if (!id) return setErr("au-u", "Ingresa tu correo o usuario.");
+    busy(true);
+    const r = await forgot(id);
+    view("sent", { id, demoToken: r.demoToken, noFocus: true });
+    resendTimer();
+  }
+  async function submitNewPassword(kind) {
+    const n = $("au-n").value, c = $("au-c").value, who = ctx.pending && ctx.pending.email || ctx.email || "";
+    const r = evaluate(n, who);
+    setErr("au-n", r.ok ? "" : "La contraseña no cumple los requisitos.");
+    setErr("au-c", c === n ? "" : "Las contraseñas no coinciden.");
+    if (!r.ok || c !== n) return;
+    busy(true);
+    try {
+      if (kind == "reset") {
+        await reset(ctx.token, n);
+        view("login", { type: "info", msg: "Contraseña actualizada. Ya puedes iniciar sesión.", noFocus: false });
+      } else {
+        await change(ctx.pending.email, null, n);
+        toast("Contraseña actualizada");
+        enter(ctx.pending);
+      }
+    } catch (e) {
+      const msg = MSG[e.code] || MSG.ERROR;
+      kind == "reset" ? view("reset", { token: ctx.token, msg }) : view("force", { msg });
+    }
+  }
+  function enter(u) {
+    if (instBlocked(u)) {
+      clear();
+      return view("login", { type: "err", msg: MSG.INST_INACTIVE });
+    }
+    USER[u.role] = { name: u.name, label: u.label, initials: u.name.split(" ").filter((x) => !/^(Dr|Dra|Prof)\.?$/.test(x)).map((x) => x[0]).slice(0, 2).join("").toUpperCase(), email: u.email };
+    delete state.profileData[u.role];
+    Object.assign(state, { role: u.role, sec: "inicio", profileEditing: false, instDraft: null, session: null });
+    if (u.inst && u.inst !== state.inst) switchInstitution(u.inst);
+    if (!can(u.role, state.sec)) state.sec = firstSection(u.role);
+    session.user = u;
+    ctx = {};
+    document.body.classList.remove("guest");
+    $("side").classList.remove("open");
+    actions();
+    onEnter();
+    startIdle(() => modal("¿Sigues ahí?", `<p style="margin:0">Por inactividad tu sesión se cerrará en ${WARN_SEC} segundos.</p>`, `<button class="btn g" onclick="closeModal()">Seguir conectado</button>`), () => logout2("idle"));
+  }
+  async function logout2(reason = "manual", remote = false) {
+    stopIdle();
+    closeModal();
+    clearInterval(timer);
+    if (!remote) {
+      await logout();
+      broadcastLogout();
+    }
+    session.user = null;
+    ctx = {};
+    Object.assign(state, { profileEditing: false, instDraft: null, session: null, sec: "inicio" });
+    document.body.classList.add("guest");
+    const m = { idle: ["info", `Tu sesión se cerró por inactividad (${IDLE_MIN} min).`], remote: ["info", "Cerraste sesión en otra pestaña."], manual: ["ok", "Cerraste sesión correctamente."] }[reason];
+    view("login", { type: m[0], msg: m[1] });
+  }
+  window.authChange = () => modal("Cambiar contraseña", `<form id="au-change" novalidate class="au-mform" onsubmit="return false">${field("cp_cur", "Contraseña actual", { type: "password", ac: "current-password", eye: true })}${pwBlock("cp_new", "cp_rep", "cp_m")}<div class="au-alert err" id="cp_msg" hidden></div></form>`, `<button class="btn o" onclick="closeModal()">Cancelar</button><button class="btn g" onclick="authChangeSubmit()">Actualizar contraseña</button>`);
+  window.authChangeSubmit = async () => {
+    const cur = $("cp_cur").value, n = $("cp_new").value, c = $("cp_rep").value, email = session.user.email, r = evaluate(n, email);
+    setErr("cp_cur", cur ? "" : "Ingresa tu contraseña actual.");
+    setErr("cp_new", r.ok ? "" : "La contraseña no cumple los requisitos.");
+    setErr("cp_rep", c === n ? "" : "Las contraseñas no coinciden.");
+    if (!cur || !r.ok || c !== n) return;
+    try {
+      await change(email, cur, n);
+      closeModal();
+      toast("Contraseña actualizada");
+    } catch (e) {
+      setErr("cp_cur", e.code == "INVALID" ? "La contraseña actual es incorrecta." : "");
+      if (e.code != "INVALID") {
+        const m = $("cp_msg");
+        m.textContent = MSG[e.code] || MSG.ERROR;
+        m.hidden = false;
+      }
+    }
+  };
+  function actions() {
+    if ($("au-acts")) return;
+    document.querySelector(".me").insertAdjacentHTML("beforeend", `<div class="au-acts" id="au-acts"><button class="ib" id="au-pw" title="Cambiar contraseña" aria-label="Cambiar contraseña">${ai("key")}</button><button class="ib" id="au-out" title="Cerrar sesión" aria-label="Cerrar sesión">${ai("logout")}</button></div>`);
+    $("au-pw").onclick = () => window.authChange();
+    $("au-out").onclick = () => logout2("manual");
+  }
+  function initUI(cb) {
+    onEnter = cb;
+    $("auth").innerHTML = `<div class="au-bg" aria-hidden="true"><div class="au-tile t1"><small>Asistencia global</small><b>91,4%</b><em>▲ 2,1% este periodo</em></div><div class="au-tile t2"><small>Clase registrada · 08:00</small><b>40 presentes</b><em>2 ausentes</em></div><div class="au-tile t3"><small>En seguimiento</small><b>37 estudiantes</b><em>Alerta temprana</em></div></div><div class="au-wrap"><div class="au-brand"><span class="au-mark">A</span><b>ATRI<i>UM</i></b></div><section class="au-card" id="au-card" aria-live="polite"></section><p class="au-foot">© 2026 ATRIUM · v1.0.0 · <a href="#">Ayuda</a> · <a href="#">Privacidad</a></p></div>`;
+    const a = $("auth");
+    a.addEventListener("submit", (e) => {
+      e.preventDefault();
+      ({ "au-login": submitLogin, "au-forgot": submitForgot, "au-reset": () => submitNewPassword("reset"), "au-force": () => submitNewPassword("force") })[e.target.id]?.();
+    });
+    a.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-act]");
+      if (!b) return;
+      const act = b.dataset.act, id = $("au-u") ? $("au-u").value : "";
+      if (act == "eye") {
+        const i = $(b.dataset.for), s = i.type == "password";
+        i.type = s ? "text" : "password";
+        b.innerHTML = s ? ai("eyeoff") : ic("eye");
+        b.setAttribute("aria-pressed", s);
+        b.setAttribute("aria-label", s ? "Ocultar contraseña" : "Mostrar contraseña");
+      } else if (act == "forgot") view("forgot", { id });
+      else if (act == "back") view("login", { id });
+      else if (act == "demo") {
+        const u = DEMO_USERS.find((x) => x.id == b.dataset.u);
+        $("au-u").value = u.email;
+        $("au-p").value = u.must ? "Temporal2026!" : DEMO_PASS;
+        $("au-p").focus();
+      } else if (act == "demoreset") view("reset", { token: b.dataset.t });
+      else if (act == "resend") {
+        forgot(ctx.id || "").then(() => {
+          b.disabled = true;
+          resendTimer();
+          toast("Enlace reenviado");
+        });
+      } else if (act == "cancel") logout2("manual");
+    });
+    a.addEventListener("keyup", (e) => {
+      if (e.target.id == "au-p" && e.getModifierState) $("au-caps").hidden = !e.getModifierState("CapsLock");
+    });
+    document.addEventListener("input", (e) => {
+      const m = e.target.dataset && e.target.dataset.pw;
+      if (!m) return;
+      const who = ctx.pending && ctx.pending.email || session.user && session.user.email || "";
+      $(m).innerHTML = meterHtml(evaluate(e.target.value, who));
+    });
+    onRemoteLogout(() => session.user && logout2("remote", true));
+  }
+  var showLogin = (o) => view("login", o);
+  var showReset = (token) => view("reset", { token });
+  var showForce = (user) => {
+    ctx.pending = user;
+    view("force");
+  };
+
+  // js/auth/index.js
+  async function bootAuth({ onEnter: onEnter2 }) {
+    initUI(onEnter2);
+    const m = /^#reset=([\w-]+)/.exec(location.hash);
+    if (m) {
+      history.replaceState(null, "", location.pathname + location.search);
+      return showReset(m[1]);
+    }
+    let r = null;
+    try {
+      r = await me();
+    } catch (e) {
+    }
+    if (!r) return showLogin();
+    r.mustChange ? showForce(r.user) : enter(r.user);
   }
 
   // js/ui/charts.js
@@ -1815,7 +3092,7 @@
   var adminHandlers = { ...institutionHandlers, ...adminsHandlers };
 
   // js/views/iadm/home.js
-  var iadmHome = () => `<div class="grid">${kpi("Estudiantes", "1.248", "#1E3A8A", "users") + kpi("Cursos activos", "42", "#3B5BC7", "book") + kpi("Profesores", "68", "#6366F1", "id") + kpi("Asistencia general", "91,4%", "#10B981", "check")}</div><div class="grid g2">${card("Asistencia por mes (%)", bars([["Ago", 93], ["Sep", 91], ["Oct", 88], ["Nov", 90], ["Dic", 85]]))}${card(
+  var iadmHome = () => `<div class="grid">${kpi("Estudiantes", "1.248", "#1E3A8A", "users") + kpi("Cursos activos", "42", "#3B5BC7", "book") + kpi("Profesores", "68", "#6366F1", "id") + kpi("Asistencia general", "97%", "#10B981", "check")}</div><div class="grid g2">${card("Asistencia por mes (%)", bars([["Ago", 93], ["Sep", 91], ["Oct", 88], ["Nov", 90], ["Dic", 85]]))}${card(
     "Cursos que requieren atención",
     table(["Curso", "%"], COURSES.filter((c) => c.attendance < 90).map((c) => [c.name, pill(c.attendance)]))
   )}</div>`;
@@ -1850,8 +3127,8 @@
   function identityView() {
     if (!state.instDraft || state.instDraft.id != state.inst) state.instDraft = { ...INST[state.inst], id: state.inst };
     const d = state.instDraft;
-    const field = (label, k) => `<div class="mrow"><label>${label}</label><input value="${d[k] || ""}" oninput="identityField('${k}',this.value)"></div>`;
-    return `<div class="ins"><div class="card"><h3>Identidad de la institución</h3>${field("Nombre", "n")}${field("Nombre corto", "s")}${field("Lema", "lema")}${field("Sitio web", "web")}${field("Correo de contacto", "mail")}<div class="mrow"><label>Logo</label><div class="cp"><input type="file" accept="image/*" onchange="identityLogo(this)">${d.logo ? '<button class="btn o" onclick="identityRemoveLogo()">Quitar</button>' : ""}</div></div><div class="acts" style="justify-content:flex-end;margin:14px 0 0"><button class="btn g" onclick="identitySave()">Guardar cambios</button></div></div><div class="card"><h3>Vista previa</h3><div id="ipv">${identityPreview(d)}</div><p style="color:var(--mu);margin:12px 0 0;font-size:12px">Al guardar, los profesores y estudiantes de esta institución verán estos cambios.</p></div></div>`;
+    const field2 = (label, k) => `<div class="mrow"><label>${label}</label><input value="${d[k] || ""}" oninput="identityField('${k}',this.value)"></div>`;
+    return `<div class="ins"><div class="card"><h3>Identidad de la institución</h3>${field2("Nombre", "n")}${field2("Nombre corto", "s")}${field2("Lema", "lema")}${field2("Sitio web", "web")}${field2("Correo de contacto", "mail")}<div class="mrow"><label>Logo</label><div class="cp"><input type="file" accept="image/*" onchange="identityLogo(this)">${d.logo ? '<button class="btn o" onclick="identityRemoveLogo()">Quitar</button>' : ""}</div></div><div class="acts" style="justify-content:flex-end;margin:14px 0 0"><button class="btn g" onclick="identitySave()">Guardar cambios</button></div></div><div class="card"><h3>Vista previa</h3><div id="ipv">${identityPreview(d)}</div><p style="color:var(--mu);margin:12px 0 0;font-size:12px">Al guardar, los profesores y estudiantes de esta institución verán estos cambios.</p></div></div>`;
   }
   function identityField(key, value) {
     state.instDraft[key] = value;
@@ -2213,20 +3490,15 @@
   $("bell").innerHTML = ic("bell") + '<span class="badge" id="bc"></span>';
   $("burger").onclick = () => $("side").classList.toggle("open");
   $("bell").onclick = () => go("notif");
-  $("inst").onchange = (e) => {
-    switchInstitution(e.target.value);
-    state.instDraft = null;
-    applyTheme();
-    render();
-  };
-  $("role").onchange = (e) => {
-    state.role = e.target.value;
-    state.sec = "inicio";
-    applyTheme();
-    render();
-  };
   startClock();
-  applyTheme();
-  render();
+  bootAuth({
+    onEnter: () => {
+      applyTheme();
+      render();
+    }
+  });
 })();
-</script></body></html>
+</script>
+</body>
+
+</html>
